@@ -35,7 +35,7 @@ Vor einer Veröffentlichung mindestens ausführen:
 npm run build
 ```
 
-Zusätzlich sollten Sprachwechsel, RTL-Ansicht, Standortwahl, Ereigniswechsel, Simulation sowie Desktop- und Mobilansicht im Browser geprüft werden.
+Zusätzlich sollten Sprachwechsel, RTL-Ansicht, Standortsuche einschließlich Tippfehlern und Namensvarianten, Ereigniswechsel, Simulation sowie Desktop- und Mobilansicht im Browser geprüft werden.
 
 ## Neue Sprache hinzufügen
 

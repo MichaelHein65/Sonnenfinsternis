@@ -10,7 +10,9 @@ Die aktuelle Sprache wird rechts oben über die Flagge ausgewählt. UMBRA speich
 
 ## Beobachtungsort
 
-Über „Mein Standort“ wird der Ort für die persönliche Berechnung gewählt. Der lokale Bereich zeigt:
+Über „Mein Standort“ wird der Ort für die persönliche Berechnung eingegeben. Während der Eingabe erscheinen passende Treffer mit Land. Die Suche toleriert fehlende Akzente, verbreitete internationale Schreibweisen und kleinere Tippfehler. Mit den Pfeiltasten wird ein Treffer markiert, mit der Eingabetaste übernommen und mit Escape verworfen. Das Ortsverzeichnis bleibt vollständig auf dem Mac; es wird kein Online-Kartendienst abgefragt.
+
+Der lokale Bereich zeigt:
 
 - Datum und Uhrzeit des nächsten sichtbaren Ereignisses
 - Art der Sonnenfinsternis

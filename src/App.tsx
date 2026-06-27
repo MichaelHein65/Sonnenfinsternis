@@ -13,17 +13,7 @@ import {
 } from './astronomy'
 import { languageInfo, languages, translator, type Locale, type TranslationKey } from './i18n'
 import { LocalSunView } from './LocalSunView'
-
-const LOCATIONS = [
-  { name: 'Berlin', latitude: 52.52, longitude: 13.405 },
-  { name: 'Hamburg', latitude: 53.551, longitude: 9.994 },
-  { name: 'München', latitude: 48.137, longitude: 11.576 },
-  { name: 'Köln', latitude: 50.938, longitude: 6.96 },
-  { name: 'Wien', latitude: 48.208, longitude: 16.374 },
-  { name: 'Zürich', latitude: 47.377, longitude: 8.542 },
-  { name: 'Madrid', latitude: 40.417, longitude: -3.704 },
-  { name: 'Reykjavík', latitude: 64.147, longitude: -21.94 },
-]
+import { DEFAULT_LOCATION, loadLocationIndex, locationCopy, searchLocations, type Location } from './locations'
 
 function typeClass(type: EclipseEvent['type']) {
   return type === 'Total' ? 'total' : type === 'Ringförmig' ? 'annular' : 'partial'
@@ -58,6 +48,14 @@ function Icon({ name }: { name: 'play' | 'pause' | 'pin' | 'chevron' | 'sun' }) 
   return <svg viewBox="0 0 24 24" aria-hidden="true">{paths[name]}</svg>
 }
 
+function savedLocation(): Location {
+  try {
+    const value = JSON.parse(localStorage.getItem('umbra-location') ?? '') as Location
+    if (value.name && value.country && Number.isFinite(value.latitude) && Number.isFinite(value.longitude)) return value
+  } catch { /* use Berlin */ }
+  return DEFAULT_LOCATION
+}
+
 export function App() {
   const now = useMemo(() => new Date(), [])
   const events = useMemo(() => findEclipses(now), [now])
@@ -66,18 +64,26 @@ export function App() {
   const [progress, setProgress] = useState(0)
   const [playing, setPlaying] = useState(true)
   const [speed, setSpeed] = useState(600)
-  const [locationIndex, setLocationIndex] = useState(0)
+  const [location, setLocation] = useState<Location>(savedLocation)
+  const [locationQuery, setLocationQuery] = useState(location.name)
+  const [locationOptions, setLocationOptions] = useState<Location[]>([])
+  const [locationOpen, setLocationOpen] = useState(false)
+  const [locationLoading, setLocationLoading] = useState(false)
+  const [activeLocation, setActiveLocation] = useState(0)
   const [locale, setLocale] = useState<Locale>(() => {
     const stored = localStorage.getItem('umbra-language')
     return languages.some((language) => language.code === stored) ? stored as Locale : 'de'
   })
   const lastFrame = useRef<number | null>(null)
   const languageMenuRef = useRef<HTMLDetailsElement>(null)
+  const locationSearchRef = useRef<HTMLDivElement>(null)
   const language = languageInfo(locale)
   const t = useMemo(() => translator(locale), [locale])
   const dateLong = useMemo(() => new Intl.DateTimeFormat(language.locale, { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }), [language.locale])
   const dateShort = useMemo(() => new Intl.DateTimeFormat(language.locale, { day: '2-digit', month: 'short', year: 'numeric' }), [language.locale])
   const timeFormat = useMemo(() => new Intl.DateTimeFormat(language.locale, { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }), [language.locale])
+  const countryNames = useMemo(() => new Intl.DisplayNames([language.locale], { type: 'region' }), [language.locale])
+  const locationText = locationCopy(locale)
 
   const event = events[selectedIndex]
   const path = useMemo(() => calculateShadowPath(event), [event])
@@ -89,7 +95,6 @@ export function App() {
   const localSkyTime = Math.round(currentTime.getTime() / 30_000) * 30_000
   const visibilityTime = Math.round(currentTime.getTime() / 120_000) * 120_000
   const visibilityPoints = useMemo(() => calculateVisibilityArea(new Date(visibilityTime)), [visibilityTime])
-  const location = LOCATIONS[locationIndex]
   const localEclipse = useMemo(() => findLocalEclipse(location.latitude, location.longitude, now), [location, now])
   const localSky = useMemo(() => calculateLocalSky(location.latitude, location.longitude, new Date(localSkyTime)), [location, localSkyTime])
   const regionName = t(regionKeys[regionLabel(event.latitude, event.longitude)] ?? 'regionOcean')
@@ -100,6 +105,26 @@ export function App() {
     document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr'
     localStorage.setItem('umbra-language', locale)
   }, [locale])
+
+  useEffect(() => {
+    localStorage.setItem('umbra-location', JSON.stringify(location))
+  }, [location])
+
+  useEffect(() => {
+    if (!locationOpen || !locationQuery.trim()) {
+      setLocationOptions([])
+      return
+    }
+    let cancelled = false
+    setLocationLoading(true)
+    loadLocationIndex().then((index) => {
+      if (cancelled) return
+      setLocationOptions(searchLocations(index, locationQuery))
+      setActiveLocation(0)
+      setLocationLoading(false)
+    })
+    return () => { cancelled = true }
+  }, [locationOpen, locationQuery])
 
   useEffect(() => {
     setProgress(0)
@@ -130,6 +155,29 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const selectLocation = (nextLocation: Location) => {
+    setLocation(nextLocation)
+    setLocationQuery(nextLocation.name)
+    setLocationOpen(false)
+  }
+
+  const handleLocationKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setLocationOpen(true)
+      setActiveLocation((value) => Math.min(value + 1, Math.max(0, locationOptions.length - 1)))
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setActiveLocation((value) => Math.max(0, value - 1))
+    } else if (event.key === 'Enter' && locationOptions[activeLocation]) {
+      event.preventDefault()
+      selectLocation(locationOptions[activeLocation])
+    } else if (event.key === 'Escape') {
+      setLocationOpen(false)
+      setLocationQuery(location.name)
+    }
+  }
+
   return (
     <main>
       <header className="topbar">
@@ -139,14 +187,52 @@ export function App() {
         </a>
         <div className="top-actions">
           <span className="offline has-tooltip" data-tooltip={t('tipOffline')}><i /> {t('offline')}</span>
-          <label className="location-select has-tooltip" data-tooltip={t('tipLocation')}>
+          <div
+            className="location-search has-tooltip"
+            data-tooltip={t('tipLocation')}
+            ref={locationSearchRef}
+            onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setLocationOpen(false) }}
+          >
             <Icon name="pin" />
-            <span><small>{t('myLocation')}</small>
-              <select value={locationIndex} onChange={(e) => setLocationIndex(Number(e.target.value))} aria-label={t('myLocation')}>
-                {LOCATIONS.map((item, index) => <option key={item.name} value={index}>{item.name}</option>)}
-              </select>
+            <span className="location-input-wrap"><small>{t('myLocation')}</small>
+              <input
+                value={locationQuery}
+                placeholder={locationText.placeholder}
+                onFocus={() => setLocationOpen(true)}
+                onChange={(event) => { setLocationQuery(event.target.value); setLocationOpen(true) }}
+                onKeyDown={handleLocationKey}
+                role="combobox"
+                aria-label={t('myLocation')}
+                aria-autocomplete="list"
+                aria-expanded={locationOpen}
+                aria-controls="location-results"
+                aria-activedescendant={locationOptions[activeLocation] ? `location-option-${activeLocation}` : undefined}
+                autoComplete="off"
+                spellCheck="false"
+              />
             </span>
-          </label>
+            {locationOpen && locationQuery.trim() && (
+              <div className="location-results" id="location-results" role="listbox">
+                {locationLoading && <span className="location-message">{locationText.loading}</span>}
+                {!locationLoading && locationOptions.map((item, index) => (
+                  <button
+                    type="button"
+                    id={`location-option-${index}`}
+                    role="option"
+                    aria-selected={index === activeLocation}
+                    className={index === activeLocation ? 'active' : ''}
+                    key={`${item.name}-${item.country}-${item.latitude}`}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onMouseEnter={() => setActiveLocation(index)}
+                    onClick={() => selectLocation(item)}
+                  >
+                    <strong>{item.name}</strong><span>{countryNames.of(item.country) ?? item.country}</span>
+                  </button>
+                ))}
+                {!locationLoading && locationOptions.length === 0 && <span className="location-message">{locationText.noResults}</span>}
+              </div>
+            )}
+          </div>
           <details className="language-picker" ref={languageMenuRef}>
             <summary className="has-tooltip" data-tooltip={t('chooseLanguage')} aria-label={t('chooseLanguage')}><span>{language.flag}</span><small>{locale.toUpperCase()}</small></summary>
             <div className="language-menu">
@@ -236,7 +322,7 @@ export function App() {
         <div className="legend"><span><i className="total" /> {t('total')}</span><span><i className="annular" /> {t('annular')}</span><span><i className="partial" /> {t('partial')}</span></div>
       </section>
 
-      <footer><span>{t('localCalculation')}</span><span>{t('noInternet')}</span></footer>
+      <footer><span>{t('localCalculation')}</span><a href="https://www.geonames.org/" target="_blank" rel="noreferrer">Ortsdaten: GeoNames</a><span>{t('noInternet')}</span></footer>
     </main>
   )
 }

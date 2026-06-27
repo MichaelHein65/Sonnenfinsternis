@@ -7,6 +7,7 @@ UMBRA ist eine statische Single-Page-Anwendung. Sämtliche astronomischen Berech
 ```text
 Benutzeroberfläche (React)
 ├── Ereignis- und Standortzustand
+├── fehlertoleranter Offline-Ortsindex
 ├── Internationalisierung
 ├── Simulationssteuerung
 └── 3D-Globus (Three.js)
@@ -20,6 +21,8 @@ Benutzeroberfläche (React)
 - `src/App.tsx`: Anwendungszustand, Bedienoberfläche und Ereignisauswahl
 - `src/Globe.tsx`: Three.js-Szene, Welttextur, Atmosphäre und Schattenbahn
 - `src/astronomy.ts`: Ereignissuche, lokale Berechnung und Schnittpunkt der Schattenachse
+- `src/locations.ts`: lazy geladene Offline-Ortssuche, Namensvarianten und Tippfehlertoleranz
+- `src/data/cities.json`: kompakter, lokal gebündelter GeoNames-Ortsindex
 - `src/i18n.ts`: zehn vollständige Sprachfassungen
 - `src/styles.css`: responsives Design, Tooltips und Sprachwahl
 - `server.mjs`: minimaler lokaler Produktionsserver
@@ -28,7 +31,9 @@ Benutzeroberfläche (React)
 
 ## Offline-Grenze
 
-Zur Laufzeit werden keine HTTP-Anfragen an externe Dienste gestellt. Astronomisches Modell, JavaScript, Styles und Kartendaten sind im Produktions-Bundle enthalten. Lediglich die einmalige Paketinstallation benötigt Zugriff auf das npm-Registry.
+Zur Laufzeit werden keine HTTP-Anfragen an externe Dienste gestellt. Astronomisches Modell, JavaScript, Styles, Kartendaten und Ortsverzeichnis sind im Produktions-Bundle enthalten. Der Ortsindex wird erst beim Fokussieren der Standorteingabe in den Browser geladen. Lediglich die einmalige Paketinstallation benötigt Zugriff auf das npm-Registry.
+
+Die Ortsdaten stammen über `all-the-cities` aus dem unter CC BY bereitgestellten [GeoNames-Datenexport](https://www.geonames.org/export/). Das Skript `npm run generate:cities` erzeugt daraus den kompakten Browserindex.
 
 ## Datenfluss
 

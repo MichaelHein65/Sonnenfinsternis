@@ -7,7 +7,8 @@ UMBRA ist eine vollständig lokal laufende Browser-Anwendung für globale und or
 ## Funktionen
 
 - vergangene und kommende globale Sonnenfinsternisse
-- lokale Berechnung für auswählbare Beobachtungsorte
+- lokale Berechnung für frei eingebbare Beobachtungsorte
+- fehlertolerante Offline-Ortssuche mit mehr als 135.000 Orten und internationalen Namensvarianten
 - animierter 3D-Globus mit berechneter Schattenbahn
 - Simulation von drei Stunden vor bis drei Stunden nach dem Maximum
 - synchronisierte lokale Sonnenscheibe mit bewegter Mondbedeckung
@@ -51,6 +52,7 @@ Dadurch entsteht `Start_Sonnenfinsternis.app` im Projektordner. Die App enthält
 - Three.js
 - Astronomy Engine
 - Natural-Earth-Geodaten über `world-atlas`
+- Ortsdaten von [GeoNames](https://www.geonames.org/) über `all-the-cities`
 - D3-Geo für eine datumsgrenzensichere Kartenprojektion
 
 ## Genauigkeit und Sicherheit
