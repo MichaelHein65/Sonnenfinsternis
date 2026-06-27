@@ -21,6 +21,8 @@ export function LocalSunView({ view, location, coverageLabel, altitudeLabel, cov
   const moonY = rawY * clampScale
   const moonRadius = sunRadius * view.moonRadiusRatio
   const belowHorizon = view.sunAltitude < 0
+  const showHorizon = view.sunAltitude < 6
+  const horizonY = Math.max(-120, Math.min(120, view.sunAltitude * 18))
 
   return (
     <div className={`local-sun-view ${belowHorizon ? 'below-horizon' : ''}`} aria-label={`${location}: ${coverageLabel} ${coverageValue}`}>
@@ -35,6 +37,11 @@ export function LocalSunView({ view, location, coverageLabel, altitudeLabel, cov
           <filter id="sunGlow" x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="8" />
           </filter>
+          <linearGradient id="horizonFade" x1="0" y1={horizonY - 18} x2="0" y2={horizonY + 115} gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#111c27" stopOpacity="0" />
+            <stop offset=".24" stopColor="#111c27" stopOpacity=".48" />
+            <stop offset="1" stopColor="#071018" stopOpacity=".94" />
+          </linearGradient>
         </defs>
         <circle r="82" fill="#e9a94a" opacity=".16" filter="url(#sunGlow)" />
         <circle r="70" fill="none" stroke="#e9a94a" strokeOpacity=".26" strokeWidth="2" />
@@ -45,7 +52,12 @@ export function LocalSunView({ view, location, coverageLabel, altitudeLabel, cov
           <circle r={moonRadius + 2} fill="none" stroke="#a9bbc6" strokeOpacity=".35" />
           <circle r={moonRadius} fill="#03070c" />
         </g>
-        {belowHorizon && <path d="M-145 78 Q0 48 145 78 L145 150 L-145 150Z" fill="#101923" opacity=".82" />}
+        {showHorizon && (
+          <>
+            <path d={`M-180 ${horizonY + 12} Q0 ${horizonY - 14} 180 ${horizonY + 12} L180 180 L-180 180Z`} fill="url(#horizonFade)" />
+            <path d={`M-180 ${horizonY + 12} Q0 ${horizonY - 14} 180 ${horizonY + 12}`} fill="none" stroke="#9babb5" strokeWidth="2" strokeOpacity=".62" />
+          </>
+        )}
       </svg>
       <div className="local-sun-stats">
         <span>{coverageLabel}<strong>{coverageValue}</strong></span>
