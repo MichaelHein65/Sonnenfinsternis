@@ -118,6 +118,8 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .local-date strong, .local-date span, .local-time strong, .local-time span, .local-time small { display: block; }
 .local-date strong, .local-time strong { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; font-weight: 400; }
 .local-date span, .local-time small { margin-top: 6px; }
+.local-date .visible-period { margin-top: 10px; color: #87949e; letter-spacing: .02em; }
+.visible-period b { margin-left: 5px; color: #d7e0e5; font: 400 10pt ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
 .local-time small { color: #687681; font-size: 10pt; }
 .sun-times { margin-top: 12px; padding-top: 9px; display: grid; gap: 6px; border-top: 1px solid var(--line); }
 .sun-times > span { display: grid; grid-template-columns: 14px 1fr auto; align-items: baseline; gap: 5px; color: #788691; font-size: 10pt; letter-spacing: .01em; }

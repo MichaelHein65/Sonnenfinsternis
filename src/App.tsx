@@ -296,7 +296,11 @@ export function App() {
       <section className="local-card has-tooltip" data-tooltip={t('tipLocal')}>
         <div className="local-icon"><Icon name="sun" /></div>
         <div className="local-location"><span>{t('nextAtLocation')}</span><h2>{location.name}</h2><small>{locationTimeZone}</small></div>
-        <div className="local-date"><strong>{localDateShort.format(localEclipse.peak)}</strong><span>{t(typeKey(localEclipse.type))} · {obscurationLabel(localEclipse.obscuration, localEclipse.type, language.locale)} {t('covered')}</span></div>
+        <div className="local-date">
+          <strong>{localDateShort.format(localEclipse.peak)}</strong>
+          <span>{t(typeKey(localEclipse.type))} · {obscurationLabel(localEclipse.obscuration, localEclipse.type, language.locale)} {t('covered')}</span>
+          <span className="visible-period">{t('visiblePeriod')} <b>{localTimeFormat.format(localEclipse.begin)}–{localTimeFormat.format(localEclipse.end)}</b></span>
+        </div>
         <div className="local-time">
           <span>{t('localMaximum')}</span><strong>{localTimeFormat.format(localEclipse.peak)}</strong><small>{t('sunAltitude')} {localEclipse.sunAltitude.toLocaleString(language.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°</small>
           <div className="sun-times">

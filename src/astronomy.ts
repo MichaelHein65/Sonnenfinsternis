@@ -192,14 +192,38 @@ export function calculateVisibilityArea(time: Date, stepDegrees = 3): Visibility
 }
 
 export function findLocalEclipse(latitude: number, longitude: number, start = new Date()): LocalEclipse {
-  const result = SearchLocalSolarEclipse(start, new Observer(latitude, longitude, 0))
+  const observer = new Observer(latitude, longitude, 0)
+  const result = SearchLocalSolarEclipse(start, observer)
+  const partialBegin = result.partial_begin.time.date
+  const partialEnd = result.partial_end.time.date
+
+  const horizonCrossing = (rising: boolean) => {
+    let low = partialBegin.getTime()
+    let high = partialEnd.getTime()
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      const middle = (low + high) / 2
+      const above = calculateLocalSky(latitude, longitude, new Date(middle)).sunAltitude >= 0
+      if (rising ? above : !above) high = middle
+      else low = middle
+    }
+    return new Date((low + high) / 2)
+  }
+
+  const begin = result.partial_begin.altitude >= 0 ? partialBegin : horizonCrossing(true)
+  const end = result.partial_end.altitude >= 0 ? partialEnd : horizonCrossing(false)
+  const peakTime = Math.max(begin.getTime(), Math.min(end.getTime(), result.peak.time.date.getTime()))
+  const peak = new Date(peakTime)
+  const visibleSky = calculateLocalSky(latitude, longitude, peak)
+  const centralPhaseVisible = result.total_begin && result.total_end
+    ? result.total_begin.time.date < end && result.total_end.time.date > begin
+    : false
   return {
-    peak: result.peak.time.date,
-    begin: result.partial_begin.time.date,
-    end: result.partial_end.time.date,
-    type: eclipseType(result.kind),
-    obscuration: result.obscuration,
-    sunAltitude: result.peak.altitude,
+    peak,
+    begin,
+    end,
+    type: centralPhaseVisible ? eclipseType(result.kind) : 'Partiell',
+    obscuration: visibleSky.obscuration,
+    sunAltitude: Math.max(0, visibleSky.sunAltitude),
   }
 }
 

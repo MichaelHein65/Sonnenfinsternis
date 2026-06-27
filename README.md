@@ -8,6 +8,7 @@ UMBRA ist eine vollständig lokal laufende Browser-Anwendung für globale und or
 
 - vergangene und kommende globale Sonnenfinsternisse
 - lokale Berechnung für frei eingebbare Beobachtungsorte
+- nächste am Beobachtungsort tatsächlich über dem Horizont sichtbare Finsternis, einschließlich partieller Ereignisse
 - fehlertolerante Offline-Ortssuche mit mehr als 135.000 Orten und internationalen Namensvarianten
 - animierter 3D-Globus mit berechneter Schattenbahn
 - dezenter Marker für den gewählten Beobachtungsort auf dem Globus

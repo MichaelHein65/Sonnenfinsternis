@@ -15,12 +15,15 @@ Die aktuelle Sprache wird rechts oben über die Flagge ausgewählt. UMBRA speich
 Der lokale Bereich zeigt:
 
 - Datum und Uhrzeit des nächsten sichtbaren Ereignisses
+- tatsächlich sichtbaren Zeitraum zwischen erstem und letztem beobachtbaren Kontakt
 - Art der Sonnenfinsternis
 - maximale Bedeckung
 - Sonnenhöhe zum lokalen Maximum
 - Sonnenaufgang und Sonnenuntergang am Tag der Finsternis
 
 Alle Angaben in diesem Bereich werden in der Zeitzone des gewählten Beobachtungsorts ausgegeben. Der IANA-Zeitzonenname steht dezent unter dem Ortsnamen; die einzelnen Uhrzeiten werden dadurch nicht mit wiederholten oder irreführenden GMT-Angaben überladen. Bei Polartag oder Polarnacht weist die Anzeige darauf hin, dass an diesem Kalendertag kein Sonnenaufgang beziehungsweise Sonnenuntergang stattfindet.
+
+Fällt das geometrische Maximum in die Nacht, wird es nicht als beobachtbares Maximum ausgegeben. Stattdessen begrenzt UMBRA das Ereignis auf den Teil, während dessen die Sonne über dem Horizont steht, und berechnet dafür die tatsächlich erreichbare maximale Bedeckung neu. Auch eine nur partielle Finsternis gilt als sichtbar.
 
 Zusätzlich zeigt eine lokale Himmelsansicht Sonne und Mond zur aktuellen Simulationszeit. Die Mondscheibe bewegt sich maßstäblich vor der Sonne; aktuelle Bedeckung und Sonnenhöhe werden daneben laufend aktualisiert. Liegt die Sonne unter dem Horizont, wird die Darstellung abgedunkelt.
 
