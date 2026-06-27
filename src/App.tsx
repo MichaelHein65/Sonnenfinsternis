@@ -100,7 +100,7 @@ export function App() {
   const localEclipse = useMemo(() => findLocalEclipse(location.latitude, location.longitude, now), [location, now])
   const locationTimeZone = useMemo(() => tzlookup(location.latitude, location.longitude), [location])
   const localDateShort = useMemo(() => new Intl.DateTimeFormat(language.locale, { day: '2-digit', month: 'short', year: 'numeric', timeZone: locationTimeZone }), [language.locale, locationTimeZone])
-  const localTimeFormat = useMemo(() => new Intl.DateTimeFormat(language.locale, { hour: '2-digit', minute: '2-digit', timeZoneName: 'short', timeZone: locationTimeZone }), [language.locale, locationTimeZone])
+  const localTimeFormat = useMemo(() => new Intl.DateTimeFormat(language.locale, { hour: '2-digit', minute: '2-digit', timeZone: locationTimeZone }), [language.locale, locationTimeZone])
   const sunTimes = useMemo(() => calculateSunTimes(location.latitude, location.longitude, localEclipse.peak, locationTimeZone), [location, localEclipse.peak, locationTimeZone])
   const localSky = useMemo(() => calculateLocalSky(location.latitude, location.longitude, new Date(localSkyTime)), [location, localSkyTime])
   const regionName = t(regionKeys[regionLabel(event.latitude, event.longitude)] ?? 'regionOcean')
@@ -272,7 +272,7 @@ export function App() {
         </div>
 
         <div className="visual-stage">
-          <Globe event={event} path={path} currentPoint={currentPoint} visibilityPoints={visibilityPoints} focusPoints={eventVisibilityPoints} tooltip={t('tipGlobe')} />
+          <Globe event={event} path={path} currentPoint={currentPoint} visibilityPoints={visibilityPoints} focusPoints={eventVisibilityPoints} observerLatitude={location.latitude} observerLongitude={location.longitude} tooltip={t('tipGlobe')} />
           <div className="globe-label">
             <span>{t('shadowCenter')}</span>
             <strong dir={currentPoint ? 'ltr' : undefined}>{currentPoint ? coordinateLabel(currentPoint.latitude, currentPoint.longitude).replace(' O', ` ${eastLabel}`) : t('outsideEarth')}</strong>
@@ -295,7 +295,7 @@ export function App() {
 
       <section className="local-card has-tooltip" data-tooltip={t('tipLocal')}>
         <div className="local-icon"><Icon name="sun" /></div>
-        <div><span>{t('nextAtLocation')}</span><h2>{location.name}</h2></div>
+        <div className="local-location"><span>{t('nextAtLocation')}</span><h2>{location.name}</h2><small>{locationTimeZone}</small></div>
         <div className="local-date"><strong>{localDateShort.format(localEclipse.peak)}</strong><span>{t(typeKey(localEclipse.type))} · {obscurationLabel(localEclipse.obscuration, localEclipse.type, language.locale)} {t('covered')}</span></div>
         <div className="local-time">
           <span>{t('localMaximum')}</span><strong>{localTimeFormat.format(localEclipse.peak)}</strong><small>{t('sunAltitude')} {localEclipse.sunAltitude.toLocaleString(language.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°</small>

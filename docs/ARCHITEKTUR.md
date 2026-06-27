@@ -42,7 +42,7 @@ Die Ortsdaten stammen über `all-the-cities` aus dem unter CC BY bereitgestellte
 2. React wählt das nächste oder ein manuell angeklicktes Ereignis.
 3. `calculateShadowPath` berechnet zeitabhängige Schnittpunkte der Mondschattenachse mit dem Erdellipsoid.
 4. Three.js projiziert diese Punkte auf die Globusoberfläche.
-5. Die Simulationszeit steuert den aktuellen Schattenmarker.
+5. Die Simulationszeit steuert den aktuellen Schattenmarker; die Standortkoordinaten steuern unabhängig davon den kleinen Beobachtungsmarker.
 
 ## Internationalisierung
 

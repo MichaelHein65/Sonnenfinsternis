@@ -20,13 +20,15 @@ Der lokale Bereich zeigt:
 - Sonnenhöhe zum lokalen Maximum
 - Sonnenaufgang und Sonnenuntergang am Tag der Finsternis
 
-Alle Angaben in diesem Bereich werden in der Zeitzone des gewählten Beobachtungsorts ausgegeben. Bei Polartag oder Polarnacht weist die Anzeige darauf hin, dass an diesem Kalendertag kein Sonnenaufgang beziehungsweise Sonnenuntergang stattfindet.
+Alle Angaben in diesem Bereich werden in der Zeitzone des gewählten Beobachtungsorts ausgegeben. Der IANA-Zeitzonenname steht dezent unter dem Ortsnamen; die einzelnen Uhrzeiten werden dadurch nicht mit wiederholten oder irreführenden GMT-Angaben überladen. Bei Polartag oder Polarnacht weist die Anzeige darauf hin, dass an diesem Kalendertag kein Sonnenaufgang beziehungsweise Sonnenuntergang stattfindet.
 
 Zusätzlich zeigt eine lokale Himmelsansicht Sonne und Mond zur aktuellen Simulationszeit. Die Mondscheibe bewegt sich maßstäblich vor der Sonne; aktuelle Bedeckung und Sonnenhöhe werden daneben laufend aktualisiert. Liegt die Sonne unter dem Horizont, wird die Darstellung abgedunkelt.
 
 ## Globus
 
 Der Globus lässt sich mit der Maus drehen und über das Scrollrad vergrößern. Die goldene, transparente Fläche zeigt das zum aktuellen Zeitpunkt sichtbare Gebiet der Finsternis. Die orange Linie zeigt ausschließlich die berechnete Bahn des Schattenzentrums. Dezente Linien in der Kartentextur sind das geografische Gradnetz.
+
+Ein kleiner türkisfarbener Punkt mit feinem Ring markiert den gewählten Beobachtungsort. Er trägt bewusst keine Beschriftung und wird wie ein echter Oberflächenpunkt von der Rückseite der Erde verdeckt.
 
 Bei rein partiellen globalen Ereignissen fehlt die orange Linie: Der Kernschatten verfehlt die Erde, während der Halbschatten weiterhin eine große partielle Sichtbarkeitszone erzeugt. Eine Erklärung am Globusrand weist darauf hin.
 

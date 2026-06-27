@@ -12,6 +12,8 @@ interface GlobeProps {
   currentPoint: ShadowPoint | null
   visibilityPoints: VisibilityPoint[]
   focusPoints: VisibilityPoint[]
+  observerLatitude: number
+  observerLongitude: number
   tooltip: string
 }
 
@@ -21,6 +23,8 @@ type GlobeObjects = {
   pulse: THREE.Mesh
   visibilityCloud: THREE.Points
   focus: THREE.Group
+  observerMarker: THREE.Mesh
+  observerHalo: THREE.Mesh
 }
 
 function vectorForCoordinate(latitude: number, longitude: number, radius = 2): THREE.Vector3 {
@@ -76,7 +80,7 @@ function createEarthTexture(): THREE.CanvasTexture {
   return texture
 }
 
-export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints, tooltip }: GlobeProps) {
+export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints, observerLatitude, observerLongitude, tooltip }: GlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const objectsRef = useRef<GlobeObjects | null>(null)
 
@@ -143,8 +147,13 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
     focus.add(visibilityCloud)
     const marker = new THREE.Mesh(new THREE.SphereGeometry(0.045, 20, 20), new THREE.MeshBasicMaterial({ color: '#fff4d4' }))
     const pulse = new THREE.Mesh(new THREE.RingGeometry(0.07, 0.105, 48), new THREE.MeshBasicMaterial({ color: '#ffb04a', transparent: true, opacity: 0.85, side: THREE.DoubleSide }))
-    focus.add(marker, pulse)
-    objectsRef.current = { pathLine, marker, pulse, visibilityCloud, focus }
+    const observerMarker = new THREE.Mesh(new THREE.SphereGeometry(0.032, 18, 18), new THREE.MeshBasicMaterial({ color: '#83ddc8', depthTest: true }))
+    const observerHalo = new THREE.Mesh(
+      new THREE.RingGeometry(0.048, 0.064, 32),
+      new THREE.MeshBasicMaterial({ color: '#b8f3df', transparent: true, opacity: 0.72, side: THREE.DoubleSide, depthWrite: false }),
+    )
+    focus.add(marker, pulse, observerMarker, observerHalo)
+    objectsRef.current = { pathLine, marker, pulse, visibilityCloud, focus, observerMarker, observerHalo }
 
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
@@ -235,6 +244,15 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
       objects.pulse.lookAt(new THREE.Vector3(0, 0, 0))
     }
   }, [currentPoint])
+
+  useEffect(() => {
+    const objects = objectsRef.current
+    if (!objects) return
+    const position = vectorForCoordinate(observerLatitude, observerLongitude, 2.045)
+    objects.observerMarker.position.copy(position)
+    objects.observerHalo.position.copy(position.clone().multiplyScalar(1.001))
+    objects.observerHalo.lookAt(new THREE.Vector3(0, 0, 0))
+  }, [observerLatitude, observerLongitude])
 
   return <div className="globe has-tooltip" ref={containerRef} data-tooltip={tooltip} aria-label={tooltip} />
 }

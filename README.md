@@ -10,6 +10,7 @@ UMBRA ist eine vollständig lokal laufende Browser-Anwendung für globale und or
 - lokale Berechnung für frei eingebbare Beobachtungsorte
 - fehlertolerante Offline-Ortssuche mit mehr als 135.000 Orten und internationalen Namensvarianten
 - animierter 3D-Globus mit berechneter Schattenbahn
+- dezenter Marker für den gewählten Beobachtungsort auf dem Globus
 - Simulation von drei Stunden vor bis drei Stunden nach dem Maximum
 - synchronisierte lokale Sonnenscheibe mit bewegter Mondbedeckung
 - Sonnenaufgang, Sonnenuntergang und Polartag/-nacht in der Zeitzone des Beobachtungsorts

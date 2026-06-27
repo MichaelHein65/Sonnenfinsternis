@@ -113,6 +113,7 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .local-icon { width: 48px; height: 48px; display: grid; place-items: center; color: var(--gold); border: 1px solid rgba(232,169,74,.25); border-radius: 50%; }
 .local-card span { color: #687681; font-size: 10pt; letter-spacing: .08em; }
 .local-card h2 { font-family: Iowan Old Style, Baskerville, Georgia, serif; font-size: 25px; margin: 5px 0 0; font-weight: 500; }
+.local-location small { display: block; margin-top: 5px; color: #60717d; font: 10pt ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0; }
 .local-date, .local-time { border-left: 1px solid var(--line); padding-left: 30px; }
 .local-date strong, .local-date span, .local-time strong, .local-time span, .local-time small { display: block; }
 .local-date strong, .local-time strong { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; font-weight: 400; }
