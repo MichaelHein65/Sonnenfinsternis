@@ -18,6 +18,9 @@ Der lokale Bereich zeigt:
 - Art der Sonnenfinsternis
 - maximale Bedeckung
 - Sonnenhöhe zum lokalen Maximum
+- Sonnenaufgang und Sonnenuntergang am Tag der Finsternis
+
+Alle Angaben in diesem Bereich werden in der Zeitzone des gewählten Beobachtungsorts ausgegeben. Bei Polartag oder Polarnacht weist die Anzeige darauf hin, dass an diesem Kalendertag kein Sonnenaufgang beziehungsweise Sonnenuntergang stattfindet.
 
 Zusätzlich zeigt eine lokale Himmelsansicht Sonne und Mond zur aktuellen Simulationszeit. Die Mondscheibe bewegt sich maßstäblich vor der Sonne; aktuelle Bedeckung und Sonnenhöhe werden daneben laufend aktualisiert. Liegt die Sonne unter dem Horizont, wird die Darstellung abgedunkelt.
 

@@ -37,4 +37,5 @@ Die Ländergrenzen stammen aus `world-atlas`. D3-Geo schneidet Polygone korrekt 
 - Atmosphärische Refraktion wird in der globalen Schattenbahndarstellung nicht als eigenes Wettermodell simuliert.
 - Gelände, Gebäude, Bewölkung und lokale Horizontabschattung sind nicht enthalten.
 - Regionsnamen sind bewusst grobe, offline verfügbare Einordnungen.
+- Sonnenaufgang und Sonnenuntergang werden mit der oberen Sonnenkante und atmosphärischer Refraktion berechnet. Die Ausgabe verwendet die offline aus den Koordinaten ermittelte IANA-Zeitzone des Beobachtungsorts.
 - Die Anwendung ersetzt keine sicherheitskritische oder wissenschaftlich zertifizierte Beobachtungsplanung.

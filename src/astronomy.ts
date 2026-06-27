@@ -13,6 +13,7 @@ import {
   Rotation_EQJ_EQD,
   SearchGlobalSolarEclipse,
   SearchLocalSolarEclipse,
+  SearchRiseSet,
   SiderealTime,
   Vector,
 } from 'astronomy-engine'
@@ -64,6 +65,13 @@ export interface LocalSkyView {
   obscuration: number
   sunAltitude: number
   separation: number
+}
+
+export interface SunTimes {
+  sunrise: Date | null
+  sunset: Date | null
+  polarDay: boolean
+  polarNight: boolean
 }
 
 function eclipseType(kind: EclipseKind): EclipseType {
@@ -193,6 +201,46 @@ export function findLocalEclipse(latitude: number, longitude: number, start = ne
     obscuration: result.obscuration,
     sunAltitude: result.peak.altitude,
   }
+}
+
+function localDateKey(date: Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(date)
+  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+  return `${value.year}-${value.month}-${value.day}`
+}
+
+/** Finds sunrise and sunset on the observer's local calendar date. */
+export function calculateSunTimes(latitude: number, longitude: number, date: Date, timeZone: string): SunTimes {
+  const observer = new Observer(latitude, longitude, 0)
+  const targetDate = localDateKey(date, timeZone)
+  const searchStart = new Date(date.getTime() - 36 * 3_600_000)
+
+  const findOnDate = (direction: 1 | -1) => {
+    let cursor = searchStart
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      const result = SearchRiseSet(Body.Sun, observer, direction, cursor, 3)
+      if (!result) return null
+      const resultDate = localDateKey(result.date, timeZone)
+      if (resultDate === targetDate) return result.date
+      if (resultDate > targetDate) return null
+      cursor = new Date(result.date.getTime() + 60_000)
+    }
+    return null
+  }
+
+  const sunrise = findOnDate(1)
+  const sunset = findOnDate(-1)
+  let polarDay = false
+  let polarNight = false
+  if (!sunrise && !sunset) {
+    const sun = Equator(Body.Sun, date, observer, true, true)
+    const altitude = Horizon(date, observer, sun.ra, sun.dec, 'normal').altitude
+    polarDay = altitude > 0
+    polarNight = !polarDay
+  }
+  return { sunrise, sunset, polarDay, polarNight }
 }
 
 function circleOverlapFraction(sunRadius: number, moonRadius: number, separation: number): number {

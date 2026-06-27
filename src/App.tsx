@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import tzlookup from 'tz-lookup'
 import { Globe } from './Globe'
 import {
   calculateShadowPath,
   calculateLocalSky,
+  calculateSunTimes,
   calculateVisibilityArea,
   coordinateLabel,
   findEclipses,
@@ -96,6 +98,10 @@ export function App() {
   const visibilityTime = Math.round(currentTime.getTime() / 120_000) * 120_000
   const visibilityPoints = useMemo(() => calculateVisibilityArea(new Date(visibilityTime)), [visibilityTime])
   const localEclipse = useMemo(() => findLocalEclipse(location.latitude, location.longitude, now), [location, now])
+  const locationTimeZone = useMemo(() => tzlookup(location.latitude, location.longitude), [location])
+  const localDateShort = useMemo(() => new Intl.DateTimeFormat(language.locale, { day: '2-digit', month: 'short', year: 'numeric', timeZone: locationTimeZone }), [language.locale, locationTimeZone])
+  const localTimeFormat = useMemo(() => new Intl.DateTimeFormat(language.locale, { hour: '2-digit', minute: '2-digit', timeZoneName: 'short', timeZone: locationTimeZone }), [language.locale, locationTimeZone])
+  const sunTimes = useMemo(() => calculateSunTimes(location.latitude, location.longitude, localEclipse.peak, locationTimeZone), [location, localEclipse.peak, locationTimeZone])
   const localSky = useMemo(() => calculateLocalSky(location.latitude, location.longitude, new Date(localSkyTime)), [location, localSkyTime])
   const regionName = t(regionKeys[regionLabel(event.latitude, event.longitude)] ?? 'regionOcean')
   const eastLabel = locale === 'de' ? 'O' : 'E'
@@ -290,8 +296,15 @@ export function App() {
       <section className="local-card has-tooltip" data-tooltip={t('tipLocal')}>
         <div className="local-icon"><Icon name="sun" /></div>
         <div><span>{t('nextAtLocation')}</span><h2>{location.name}</h2></div>
-        <div className="local-date"><strong>{dateShort.format(localEclipse.peak)}</strong><span>{t(typeKey(localEclipse.type))} · {obscurationLabel(localEclipse.obscuration, localEclipse.type, language.locale)} {t('covered')}</span></div>
-        <div className="local-time"><span>{t('localMaximum')}</span><strong>{timeFormat.format(localEclipse.peak)}</strong><small>{t('sunAltitude')} {localEclipse.sunAltitude.toLocaleString(language.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°</small></div>
+        <div className="local-date"><strong>{localDateShort.format(localEclipse.peak)}</strong><span>{t(typeKey(localEclipse.type))} · {obscurationLabel(localEclipse.obscuration, localEclipse.type, language.locale)} {t('covered')}</span></div>
+        <div className="local-time">
+          <span>{t('localMaximum')}</span><strong>{localTimeFormat.format(localEclipse.peak)}</strong><small>{t('sunAltitude')} {localEclipse.sunAltitude.toLocaleString(language.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°</small>
+          <div className="sun-times">
+            <span><em>↗</em>{t('sunrise')}<strong>{sunTimes.sunrise ? localTimeFormat.format(sunTimes.sunrise) : t('noRise')}</strong></span>
+            <span><em>↘</em>{t('sunset')}<strong>{sunTimes.sunset ? localTimeFormat.format(sunTimes.sunset) : t('noSet')}</strong></span>
+          </div>
+          {(sunTimes.polarDay || sunTimes.polarNight) && <small className="polar-state">{t(sunTimes.polarDay ? 'polarDay' : 'polarNight')}</small>}
+        </div>
         <LocalSunView
           view={localSky}
           location={location.name}
@@ -299,7 +312,7 @@ export function App() {
           altitudeLabel={t('sunAltitude')}
           coverageValue={obscurationLabel(localSky.obscuration, event.type, language.locale)}
           altitudeValue={`${localSky.sunAltitude.toLocaleString(language.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°`}
-          timeLabel={timeFormat.format(currentTime)}
+          timeLabel={localTimeFormat.format(currentTime)}
         />
       </section>
 

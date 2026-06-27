@@ -12,6 +12,7 @@ UMBRA ist eine vollständig lokal laufende Browser-Anwendung für globale und or
 - animierter 3D-Globus mit berechneter Schattenbahn
 - Simulation von drei Stunden vor bis drei Stunden nach dem Maximum
 - synchronisierte lokale Sonnenscheibe mit bewegter Mondbedeckung
+- Sonnenaufgang, Sonnenuntergang und Polartag/-nacht in der Zeitzone des Beobachtungsorts
 - zehn Sprachen: Deutsch, Englisch, Spanisch, Französisch, Portugiesisch, Chinesisch, Arabisch, Hindi, Japanisch und Kroatisch
 - Rechts-nach-links-Darstellung für Arabisch
 - kontextbezogene Tooltips nach fünf Sekunden Hover

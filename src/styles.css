@@ -109,7 +109,7 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .speed-control button { padding: 3px 6px; border: 0; background: transparent; color: #63717d; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10pt; cursor: pointer; }
 .speed-control button.active { color: var(--gold); background: rgba(232,169,74,.1); }
 
-.local-card { max-width: 1600px; margin: 0 auto 75px; padding: 24px clamp(24px, 4vw, 48px); display: grid; grid-template-columns: auto minmax(145px, 1fr) minmax(190px, .9fr) minmax(175px, .8fr) minmax(270px, 1.15fr); align-items: center; gap: 26px; border: 1px solid var(--line); background: linear-gradient(100deg, rgba(29,42,53,.55), rgba(10,15,23,.7)); }
+.local-card { max-width: 1600px; margin: 0 auto 75px; padding: 24px clamp(24px, 4vw, 48px); display: grid; grid-template-columns: auto minmax(145px, 1fr) minmax(190px, .9fr) minmax(230px, .9fr) minmax(270px, 1.15fr); align-items: center; gap: 26px; border: 1px solid var(--line); background: linear-gradient(100deg, rgba(29,42,53,.55), rgba(10,15,23,.7)); }
 .local-icon { width: 48px; height: 48px; display: grid; place-items: center; color: var(--gold); border: 1px solid rgba(232,169,74,.25); border-radius: 50%; }
 .local-card span { color: #687681; font-size: 10pt; letter-spacing: .08em; }
 .local-card h2 { font-family: Iowan Old Style, Baskerville, Georgia, serif; font-size: 25px; margin: 5px 0 0; font-weight: 500; }
@@ -118,6 +118,11 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .local-date strong, .local-time strong { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; font-weight: 400; }
 .local-date span, .local-time small { margin-top: 6px; }
 .local-time small { color: #687681; font-size: 10pt; }
+.sun-times { margin-top: 12px; padding-top: 9px; display: grid; gap: 6px; border-top: 1px solid var(--line); }
+.sun-times > span { display: grid; grid-template-columns: 14px 1fr auto; align-items: baseline; gap: 5px; color: #788691; font-size: 10pt; letter-spacing: .01em; }
+.sun-times em { color: var(--gold); font-style: normal; }
+.sun-times > span > strong { display: block; margin: 0; color: #d6dee3; font: 400 10pt ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+.local-time .polar-state { margin-top: 6px; color: #d6a858; }
 .local-sun-view { min-height: 168px; padding-left: 24px; display: grid; grid-template-columns: 158px 1fr; grid-template-rows: auto 1fr; align-items: center; border-left: 1px solid var(--line); overflow: hidden; }
 .local-sun-heading { align-self: end; }
 .local-sun-heading span, .local-sun-heading small { display: block; }

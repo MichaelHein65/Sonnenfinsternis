@@ -21,6 +21,7 @@ Benutzeroberfläche (React)
 - `src/App.tsx`: Anwendungszustand, Bedienoberfläche und Ereignisauswahl
 - `src/Globe.tsx`: Three.js-Szene, Welttextur, Atmosphäre und Schattenbahn
 - `src/astronomy.ts`: Ereignissuche, lokale Berechnung und Schnittpunkt der Schattenachse
+- `tz-lookup`: lokale Offline-Zeitzone aus den Koordinaten des Beobachtungsorts
 - `src/locations.ts`: lazy geladene Offline-Ortssuche, Namensvarianten und Tippfehlertoleranz
 - `src/data/cities.json`: kompakter, lokal gebündelter GeoNames-Ortsindex
 - `src/i18n.ts`: zehn vollständige Sprachfassungen
