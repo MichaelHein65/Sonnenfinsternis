@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Globe } from './Globe'
 import {
   calculateShadowPath,
+  calculateLocalSky,
   calculateVisibilityArea,
   coordinateLabel,
   findEclipses,
@@ -11,6 +12,7 @@ import {
   type EclipseEvent,
 } from './astronomy'
 import { languageInfo, languages, translator, type Locale, type TranslationKey } from './i18n'
+import { LocalSunView } from './LocalSunView'
 
 const LOCATIONS = [
   { name: 'Berlin', latitude: 52.52, longitude: 13.405 },
@@ -84,10 +86,12 @@ export function App() {
   const endTime = new Date(event.peak.getTime() + 3 * 3_600_000)
   const currentTime = new Date(startTime.getTime() + progress * (endTime.getTime() - startTime.getTime()))
   const currentPoint = useMemo(() => shadowPointAt(currentTime), [currentTime.getTime()])
+  const localSkyTime = Math.round(currentTime.getTime() / 30_000) * 30_000
   const visibilityTime = Math.round(currentTime.getTime() / 120_000) * 120_000
   const visibilityPoints = useMemo(() => calculateVisibilityArea(new Date(visibilityTime)), [visibilityTime])
   const location = LOCATIONS[locationIndex]
   const localEclipse = useMemo(() => findLocalEclipse(location.latitude, location.longitude, now), [location, now])
+  const localSky = useMemo(() => calculateLocalSky(location.latitude, location.longitude, new Date(localSkyTime)), [location, localSkyTime])
   const regionName = t(regionKeys[regionLabel(event.latitude, event.longitude)] ?? 'regionOcean')
   const eastLabel = locale === 'de' ? 'O' : 'E'
 
@@ -202,6 +206,15 @@ export function App() {
         <div><span>{t('nextAtLocation')}</span><h2>{location.name}</h2></div>
         <div className="local-date"><strong>{dateShort.format(localEclipse.peak)}</strong><span>{t(typeKey(localEclipse.type))} · {obscurationLabel(localEclipse.obscuration, localEclipse.type, language.locale)} {t('covered')}</span></div>
         <div className="local-time"><span>{t('localMaximum')}</span><strong>{timeFormat.format(localEclipse.peak)}</strong><small>{t('sunAltitude')} {localEclipse.sunAltitude.toLocaleString(language.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°</small></div>
+        <LocalSunView
+          view={localSky}
+          location={location.name}
+          coverageLabel={t('coverage')}
+          altitudeLabel={t('sunAltitude')}
+          coverageValue={obscurationLabel(localSky.obscuration, event.type, language.locale)}
+          altitudeValue={`${localSky.sunAltitude.toLocaleString(language.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}°`}
+          timeLabel={timeFormat.format(currentTime)}
+        />
       </section>
 
       <section className="events-section">

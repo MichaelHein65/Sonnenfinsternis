@@ -6,6 +6,12 @@ Globale Sonnenfinsternisse werden mit `SearchGlobalSolarEclipse` und `NextGlobal
 
 Lokale Ereignisse werden mit `SearchLocalSolarEclipse` für Breite und Länge des Beobachtungsortes berechnet. Daraus stammen Beginn, Maximum, Ende, Bedeckung und Sonnenhöhe.
 
+## Lokale Sonnenscheibe
+
+Für die gewählte Position werden die topozentrischen Rektaszensions- und Deklinationswerte von Sonne und Mond zur Simulationszeit berechnet. Aus Distanz und physischem Radius entstehen die beiden scheinbaren Winkelradien. Die relative Rektaszensions- und Deklinationsdifferenz steuert die Position der Mondscheibe vor der Sonne.
+
+Die aktuelle Bedeckung wird aus der Schnittfläche zweier Kreise mit den jeweiligen scheinbaren Radien und ihrem Winkelabstand bestimmt. Die Sonnenhöhe stammt aus der lokalen Horizonttransformation. Die Himmelsansicht wird während der Animation alle 30 simulierten Sekunden aktualisiert.
+
 ## Bewegte Schattenachse
 
 Für jeden Simulationszeitpunkt werden geozentrische Vektoren von Sonne und Mond berechnet. Die Achse des Mondschattens verläuft vom Mond von der Sonne fort. Diese Achse wird zunächst vom J2000-Bezugssystem in das wahre Äquatorsystem des Datums gedreht.

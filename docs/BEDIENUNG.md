@@ -17,6 +17,8 @@ Die aktuelle Sprache wird rechts oben über die Flagge ausgewählt. UMBRA speich
 - maximale Bedeckung
 - Sonnenhöhe zum lokalen Maximum
 
+Zusätzlich zeigt eine lokale Himmelsansicht Sonne und Mond zur aktuellen Simulationszeit. Die Mondscheibe bewegt sich maßstäblich vor der Sonne; aktuelle Bedeckung und Sonnenhöhe werden daneben laufend aktualisiert. Liegt die Sonne unter dem Horizont, wird die Darstellung abgedunkelt.
+
 ## Globus
 
 Der Globus lässt sich mit der Maus drehen und über das Scrollrad vergrößern. Die goldene, transparente Fläche zeigt das zum aktuellen Zeitpunkt sichtbare Gebiet der Finsternis. Die orange Linie zeigt ausschließlich die berechnete Bahn des Schattenzentrums. Dezente Linien in der Kartentextur sind das geografische Gradnetz.

@@ -1,9 +1,11 @@
 import {
   AstroTime,
   Body,
+  Equator,
   EclipseKind,
   GeoMoon,
   GeoVector,
+  Horizon,
   KM_PER_AU,
   NextGlobalSolarEclipse,
   Observer,
@@ -53,6 +55,15 @@ export interface LocalEclipse {
   type: EclipseType
   obscuration: number
   sunAltitude: number
+}
+
+export interface LocalSkyView {
+  moonOffsetX: number
+  moonOffsetY: number
+  moonRadiusRatio: number
+  obscuration: number
+  sunAltitude: number
+  separation: number
 }
 
 function eclipseType(kind: EclipseKind): EclipseType {
@@ -181,6 +192,46 @@ export function findLocalEclipse(latitude: number, longitude: number, start = ne
     type: eclipseType(result.kind),
     obscuration: result.obscuration,
     sunAltitude: result.peak.altitude,
+  }
+}
+
+function circleOverlapFraction(sunRadius: number, moonRadius: number, separation: number): number {
+  if (separation >= sunRadius + moonRadius) return 0
+  if (separation <= Math.abs(sunRadius - moonRadius)) {
+    return moonRadius >= sunRadius ? 1 : (moonRadius * moonRadius) / (sunRadius * sunRadius)
+  }
+  const sunPart = sunRadius * sunRadius * Math.acos((separation ** 2 + sunRadius ** 2 - moonRadius ** 2) / (2 * separation * sunRadius))
+  const moonPart = moonRadius * moonRadius * Math.acos((separation ** 2 + moonRadius ** 2 - sunRadius ** 2) / (2 * separation * moonRadius))
+  const triangle = 0.5 * Math.sqrt(
+    (-separation + sunRadius + moonRadius) *
+    (separation + sunRadius - moonRadius) *
+    (separation - sunRadius + moonRadius) *
+    (separation + sunRadius + moonRadius),
+  )
+  return Math.max(0, Math.min(1, (sunPart + moonPart - triangle) / (Math.PI * sunRadius * sunRadius)))
+}
+
+/** Calculates the apparent Sun and Moon discs for a topocentric observer. */
+export function calculateLocalSky(latitude: number, longitude: number, time: Date): LocalSkyView {
+  const observer = new Observer(latitude, longitude, 0)
+  const sun = Equator(Body.Sun, time, observer, true, true)
+  const moon = Equator(Body.Moon, time, observer, true, true)
+  let deltaRaHours = moon.ra - sun.ra
+  if (deltaRaHours > 12) deltaRaHours -= 24
+  if (deltaRaHours < -12) deltaRaHours += 24
+  const offsetX = -15 * deltaRaHours * Math.cos(sun.dec * DEG2RAD)
+  const offsetY = moon.dec - sun.dec
+  const separation = Math.hypot(offsetX, offsetY)
+  const sunRadius = Math.atan(SUN_RADIUS_KM / (sun.dist * KM_PER_AU)) * RAD2DEG
+  const moonRadius = Math.atan(MOON_RADIUS_KM / (moon.dist * KM_PER_AU)) * RAD2DEG
+  const horizon = Horizon(time, observer, sun.ra, sun.dec, 'normal')
+  return {
+    moonOffsetX: offsetX / sunRadius,
+    moonOffsetY: -offsetY / sunRadius,
+    moonRadiusRatio: moonRadius / sunRadius,
+    obscuration: circleOverlapFraction(sunRadius, moonRadius, separation),
+    sunAltitude: horizon.altitude,
+    separation,
   }
 }
 
