@@ -1,0 +1,125 @@
+export const languages = [
+  { code: 'de', locale: 'de-DE', flag: '🇩🇪', name: 'Deutsch' },
+  { code: 'en', locale: 'en-GB', flag: '🇬🇧', name: 'English' },
+  { code: 'es', locale: 'es-ES', flag: '🇪🇸', name: 'Español' },
+  { code: 'fr', locale: 'fr-FR', flag: '🇫🇷', name: 'Français' },
+  { code: 'pt', locale: 'pt-PT', flag: '🇵🇹', name: 'Português' },
+  { code: 'zh', locale: 'zh-CN', flag: '🇨🇳', name: '中文' },
+  { code: 'ar', locale: 'ar-SA', flag: '🇸🇦', name: 'العربية' },
+  { code: 'hi', locale: 'hi-IN', flag: '🇮🇳', name: 'हिन्दी' },
+  { code: 'ja', locale: 'ja-JP', flag: '🇯🇵', name: '日本語' },
+  { code: 'hr', locale: 'hr-HR', flag: '🇭🇷', name: 'Hrvatski' },
+] as const
+
+export type Locale = typeof languages[number]['code']
+
+const de = {
+  brandSubtitle: 'Finsternisse lokal berechnet', offline: 'AUTARK BEREIT', myLocation: 'Mein Standort',
+  nextGlobal: 'NÄCHSTES GLOBALES EREIGNIS', selectedGlobal: 'AUSGEWÄHLTES GLOBALES EREIGNIS',
+  totalTitle: 'Totale Sonnenfinsternis', annularTitle: 'Ringförmige Sonnenfinsternis', partialTitle: 'Partielle Sonnenfinsternis',
+  total: 'Total', annular: 'Ringförmig', partial: 'Partiell', type: 'Typ', coverage: 'Bedeckung', locationDependent: 'ortsabhängig', axis: 'Schattenachse',
+  shadowCenter: 'Schattenzentrum', outsideEarth: 'außerhalb der Erdoberfläche', simulatedTime: 'SIMULIERTE ZEIT', maximum: 'Maximum', speed: 'Geschwindigkeit',
+  nextAtLocation: 'NÄCHSTE FINSTERNIS AN DEINEM ORT', covered: 'bedeckt', localMaximum: 'Lokales Maximum', sunAltitude: 'Sonnenhöhe',
+  timeTravel: 'ZEITREISE', eventsHeading: 'Vergangene & kommende Ereignisse', calculatedHere: 'Alle Daten werden direkt auf diesem Gerät berechnet.',
+  past: 'VERGANGEN', next: 'ALS NÄCHSTES', upcoming: 'KOMMEND', localCalculation: 'UMBRA · Lokale astronomische Berechnung', noInternet: 'Keine Internetverbindung erforderlich',
+  regionPartial: 'Globale partielle Finsternis', regionArctic: 'Arktische Breiten', regionAntarctic: 'Antarktische Breiten', regionNorthAmerica: 'Nordamerika',
+  regionSouthAtlantic: 'Südamerika / Atlantik', regionEuropeAtlantic: 'Europa / Nordatlantik', regionAfrica: 'Afrika / Mittelmeerraum', regionAsia: 'Asien', regionPacific: 'Australien / Pazifik', regionOcean: 'Ozeanische Zentralzone',
+  chooseLanguage: 'Sprache auswählen', tipOffline: 'Die Berechnungen und Kartendaten funktionieren vollständig ohne Internet.', tipLocation: 'Wähle den Ort für deine persönliche Finsternisberechnung.',
+  tipType: 'Art der Sonnenfinsternis am Ort des globalen Maximums.', tipCoverage: 'Anteil der sichtbaren Sonnenfläche, der vom Mond bedeckt wird.', tipAxis: 'Kleinster Abstand der Mondschattenachse vom Erdmittelpunkt.',
+  tipGlobe: 'Ziehen zum Drehen, scrollen zum Vergrößern. Die orange Linie zeigt die Bahn des Schattenzentrums.', tipPlay: 'Simulation starten oder pausieren.',
+  tipTimeline: 'Zeitpunkt innerhalb von drei Stunden vor bis drei Stunden nach dem Maximum.', tipSpeed: 'Abspielgeschwindigkeit der Simulation ändern.',
+  tipLocal: 'Nächste von diesem Beobachtungsort aus sichtbare Sonnenfinsternis.', tipEvent: 'Dieses Ereignis auf dem Globus anzeigen.',
+}
+
+export type TranslationKey = keyof typeof de
+
+const en: typeof de = {
+  brandSubtitle: 'Eclipses calculated locally', offline: 'OFFLINE READY', myLocation: 'My location', nextGlobal: 'NEXT GLOBAL EVENT', selectedGlobal: 'SELECTED GLOBAL EVENT',
+  totalTitle: 'Total solar eclipse', annularTitle: 'Annular solar eclipse', partialTitle: 'Partial solar eclipse', total: 'Total', annular: 'Annular', partial: 'Partial', type: 'Type', coverage: 'Obscuration', locationDependent: 'location-dependent', axis: 'Shadow axis',
+  shadowCenter: 'Shadow centre', outsideEarth: 'outside the Earth’s surface', simulatedTime: 'SIMULATED TIME', maximum: 'Maximum', speed: 'Speed', nextAtLocation: 'NEXT ECLIPSE AT YOUR LOCATION', covered: 'covered', localMaximum: 'Local maximum', sunAltitude: 'Sun altitude',
+  timeTravel: 'TIME TRAVEL', eventsHeading: 'Past & upcoming events', calculatedHere: 'All data is calculated directly on this device.', past: 'PAST', next: 'NEXT', upcoming: 'UPCOMING', localCalculation: 'UMBRA · Local astronomical calculation', noInternet: 'No internet connection required',
+  regionPartial: 'Global partial eclipse', regionArctic: 'Arctic latitudes', regionAntarctic: 'Antarctic latitudes', regionNorthAmerica: 'North America', regionSouthAtlantic: 'South America / Atlantic', regionEuropeAtlantic: 'Europe / North Atlantic', regionAfrica: 'Africa / Mediterranean', regionAsia: 'Asia', regionPacific: 'Australia / Pacific', regionOcean: 'Central ocean zone',
+  chooseLanguage: 'Choose language', tipOffline: 'Calculations and map data work completely without internet access.', tipLocation: 'Choose the location for your personal eclipse calculation.', tipType: 'Type of solar eclipse at the global maximum location.', tipCoverage: 'Fraction of the visible solar surface covered by the Moon.', tipAxis: 'Smallest distance between the lunar shadow axis and the centre of Earth.', tipGlobe: 'Drag to rotate and scroll to zoom. The orange line shows the path of the shadow centre.', tipPlay: 'Start or pause the simulation.', tipTimeline: 'Time within three hours before to three hours after the maximum.', tipSpeed: 'Change the simulation playback speed.', tipLocal: 'Next solar eclipse visible from this observing location.', tipEvent: 'Show this event on the globe.',
+}
+
+const es: typeof de = {
+  brandSubtitle: 'Eclipses calculados localmente', offline: 'LISTO SIN CONEXIÓN', myLocation: 'Mi ubicación', nextGlobal: 'PRÓXIMO EVENTO GLOBAL', selectedGlobal: 'EVENTO GLOBAL SELECCIONADO',
+  totalTitle: 'Eclipse solar total', annularTitle: 'Eclipse solar anular', partialTitle: 'Eclipse solar parcial', total: 'Total', annular: 'Anular', partial: 'Parcial', type: 'Tipo', coverage: 'Oscurecimiento', locationDependent: 'según la ubicación', axis: 'Eje de sombra',
+  shadowCenter: 'Centro de la sombra', outsideEarth: 'fuera de la superficie terrestre', simulatedTime: 'HORA SIMULADA', maximum: 'Máximo', speed: 'Velocidad', nextAtLocation: 'PRÓXIMO ECLIPSE EN TU UBICACIÓN', covered: 'cubierto', localMaximum: 'Máximo local', sunAltitude: 'Altura del Sol',
+  timeTravel: 'VIAJE EN EL TIEMPO', eventsHeading: 'Eventos pasados y próximos', calculatedHere: 'Todos los datos se calculan directamente en este dispositivo.', past: 'PASADO', next: 'PRÓXIMO', upcoming: 'FUTURO', localCalculation: 'UMBRA · Cálculo astronómico local', noInternet: 'No requiere conexión a internet',
+  regionPartial: 'Eclipse parcial global', regionArctic: 'Latitudes árticas', regionAntarctic: 'Latitudes antárticas', regionNorthAmerica: 'Norteamérica', regionSouthAtlantic: 'Sudamérica / Atlántico', regionEuropeAtlantic: 'Europa / Atlántico Norte', regionAfrica: 'África / Mediterráneo', regionAsia: 'Asia', regionPacific: 'Australia / Pacífico', regionOcean: 'Zona oceánica central',
+  chooseLanguage: 'Seleccionar idioma', tipOffline: 'Los cálculos y los mapas funcionan completamente sin internet.', tipLocation: 'Elige el lugar para tu cálculo personal del eclipse.', tipType: 'Tipo de eclipse solar en el lugar del máximo global.', tipCoverage: 'Fracción de la superficie solar visible cubierta por la Luna.', tipAxis: 'Distancia mínima entre el eje de la sombra lunar y el centro de la Tierra.', tipGlobe: 'Arrastra para girar y desplázate para ampliar. La línea naranja muestra la trayectoria del centro de la sombra.', tipPlay: 'Iniciar o pausar la simulación.', tipTimeline: 'Momento entre tres horas antes y tres horas después del máximo.', tipSpeed: 'Cambiar la velocidad de reproducción.', tipLocal: 'Próximo eclipse solar visible desde este lugar.', tipEvent: 'Mostrar este evento en el globo.',
+}
+
+const fr: typeof de = {
+  brandSubtitle: 'Éclipses calculées localement', offline: 'PRÊT HORS LIGNE', myLocation: 'Ma position', nextGlobal: 'PROCHAIN ÉVÉNEMENT MONDIAL', selectedGlobal: 'ÉVÉNEMENT MONDIAL SÉLECTIONNÉ',
+  totalTitle: 'Éclipse solaire totale', annularTitle: 'Éclipse solaire annulaire', partialTitle: 'Éclipse solaire partielle', total: 'Totale', annular: 'Annulaire', partial: 'Partielle', type: 'Type', coverage: 'Obscuration', locationDependent: 'selon le lieu', axis: 'Axe de l’ombre',
+  shadowCenter: 'Centre de l’ombre', outsideEarth: 'hors de la surface terrestre', simulatedTime: 'HEURE SIMULÉE', maximum: 'Maximum', speed: 'Vitesse', nextAtLocation: 'PROCHAINE ÉCLIPSE À VOTRE POSITION', covered: 'couvert', localMaximum: 'Maximum local', sunAltitude: 'Hauteur du Soleil',
+  timeTravel: 'VOYAGE DANS LE TEMPS', eventsHeading: 'Événements passés et à venir', calculatedHere: 'Toutes les données sont calculées directement sur cet appareil.', past: 'PASSÉ', next: 'PROCHAIN', upcoming: 'À VENIR', localCalculation: 'UMBRA · Calcul astronomique local', noInternet: 'Aucune connexion internet requise',
+  regionPartial: 'Éclipse partielle mondiale', regionArctic: 'Latitudes arctiques', regionAntarctic: 'Latitudes antarctiques', regionNorthAmerica: 'Amérique du Nord', regionSouthAtlantic: 'Amérique du Sud / Atlantique', regionEuropeAtlantic: 'Europe / Atlantique Nord', regionAfrica: 'Afrique / Méditerranée', regionAsia: 'Asie', regionPacific: 'Australie / Pacifique', regionOcean: 'Zone océanique centrale',
+  chooseLanguage: 'Choisir la langue', tipOffline: 'Les calculs et les cartes fonctionnent entièrement sans internet.', tipLocation: 'Choisissez le lieu de votre calcul personnel.', tipType: 'Type d’éclipse solaire au lieu du maximum mondial.', tipCoverage: 'Part de la surface solaire visible masquée par la Lune.', tipAxis: 'Distance minimale entre l’axe de l’ombre lunaire et le centre de la Terre.', tipGlobe: 'Faites glisser pour tourner et défiler pour zoomer. La ligne orange indique la trajectoire du centre de l’ombre.', tipPlay: 'Démarrer ou suspendre la simulation.', tipTimeline: 'Moment compris entre trois heures avant et après le maximum.', tipSpeed: 'Modifier la vitesse de la simulation.', tipLocal: 'Prochaine éclipse visible depuis ce lieu.', tipEvent: 'Afficher cet événement sur le globe.',
+}
+
+const pt: typeof de = {
+  brandSubtitle: 'Eclipses calculados localmente', offline: 'PRONTO OFFLINE', myLocation: 'A minha localização', nextGlobal: 'PRÓXIMO EVENTO GLOBAL', selectedGlobal: 'EVENTO GLOBAL SELECIONADO',
+  totalTitle: 'Eclipse solar total', annularTitle: 'Eclipse solar anular', partialTitle: 'Eclipse solar parcial', total: 'Total', annular: 'Anular', partial: 'Parcial', type: 'Tipo', coverage: 'Obscurecimento', locationDependent: 'depende do local', axis: 'Eixo da sombra',
+  shadowCenter: 'Centro da sombra', outsideEarth: 'fora da superfície terrestre', simulatedTime: 'HORA SIMULADA', maximum: 'Máximo', speed: 'Velocidade', nextAtLocation: 'PRÓXIMO ECLIPSE NO SEU LOCAL', covered: 'coberto', localMaximum: 'Máximo local', sunAltitude: 'Altura do Sol',
+  timeTravel: 'VIAGEM NO TEMPO', eventsHeading: 'Eventos passados e futuros', calculatedHere: 'Todos os dados são calculados diretamente neste dispositivo.', past: 'PASSADO', next: 'PRÓXIMO', upcoming: 'FUTURO', localCalculation: 'UMBRA · Cálculo astronómico local', noInternet: 'Sem necessidade de internet',
+  regionPartial: 'Eclipse parcial global', regionArctic: 'Latitudes árticas', regionAntarctic: 'Latitudes antárticas', regionNorthAmerica: 'América do Norte', regionSouthAtlantic: 'América do Sul / Atlântico', regionEuropeAtlantic: 'Europa / Atlântico Norte', regionAfrica: 'África / Mediterrâneo', regionAsia: 'Ásia', regionPacific: 'Austrália / Pacífico', regionOcean: 'Zona oceânica central',
+  chooseLanguage: 'Escolher idioma', tipOffline: 'Os cálculos e os mapas funcionam totalmente sem internet.', tipLocation: 'Escolha o local do seu cálculo pessoal.', tipType: 'Tipo de eclipse solar no local do máximo global.', tipCoverage: 'Parte da superfície solar visível coberta pela Lua.', tipAxis: 'Menor distância entre o eixo da sombra lunar e o centro da Terra.', tipGlobe: 'Arraste para rodar e desloque para ampliar. A linha laranja mostra o percurso do centro da sombra.', tipPlay: 'Iniciar ou pausar a simulação.', tipTimeline: 'Instante entre três horas antes e três horas depois do máximo.', tipSpeed: 'Alterar a velocidade da simulação.', tipLocal: 'Próximo eclipse visível deste local.', tipEvent: 'Mostrar este evento no globo.',
+}
+
+const zh: typeof de = {
+  brandSubtitle: '在本机计算日食', offline: '离线就绪', myLocation: '我的位置', nextGlobal: '下一次全球事件', selectedGlobal: '已选全球事件',
+  totalTitle: '日全食', annularTitle: '日环食', partialTitle: '日偏食', total: '全食', annular: '环食', partial: '偏食', type: '类型', coverage: '遮掩率', locationDependent: '因地点而异', axis: '影轴',
+  shadowCenter: '阴影中心', outsideEarth: '位于地球表面之外', simulatedTime: '模拟时间', maximum: '食甚', speed: '速度', nextAtLocation: '您所在地的下一次日食', covered: '被遮掩', localMaximum: '当地食甚', sunAltitude: '太阳高度',
+  timeTravel: '时间之旅', eventsHeading: '过去与未来的事件', calculatedHere: '所有数据均直接在此设备上计算。', past: '过去', next: '下一次', upcoming: '未来', localCalculation: 'UMBRA · 本地天文计算', noInternet: '无需互联网连接',
+  regionPartial: '全球日偏食', regionArctic: '北极纬度', regionAntarctic: '南极纬度', regionNorthAmerica: '北美洲', regionSouthAtlantic: '南美洲 / 大西洋', regionEuropeAtlantic: '欧洲 / 北大西洋', regionAfrica: '非洲 / 地中海', regionAsia: '亚洲', regionPacific: '澳大利亚 / 太平洋', regionOcean: '中央海洋区',
+  chooseLanguage: '选择语言', tipOffline: '计算和地图数据完全无需互联网。', tipLocation: '选择用于个人日食计算的地点。', tipType: '全球食甚地点的日食类型。', tipCoverage: '月球遮住的可见太阳表面比例。', tipAxis: '月球影轴与地心之间的最小距离。', tipGlobe: '拖动旋转，滚动缩放。橙线表示阴影中心的路径。', tipPlay: '开始或暂停模拟。', tipTimeline: '食甚前三小时至后三小时内的时间点。', tipSpeed: '更改模拟播放速度。', tipLocal: '从该观测地点可见的下一次日食。', tipEvent: '在地球仪上显示此事件。',
+}
+
+const ar: typeof de = {
+  brandSubtitle: 'حساب الكسوف محليًا', offline: 'جاهز دون اتصال', myLocation: 'موقعي', nextGlobal: 'الحدث العالمي القادم', selectedGlobal: 'الحدث العالمي المحدد',
+  totalTitle: 'كسوف شمسي كلي', annularTitle: 'كسوف شمسي حلقي', partialTitle: 'كسوف شمسي جزئي', total: 'كلي', annular: 'حلقي', partial: 'جزئي', type: 'النوع', coverage: 'نسبة الحجب', locationDependent: 'حسب الموقع', axis: 'محور الظل',
+  shadowCenter: 'مركز الظل', outsideEarth: 'خارج سطح الأرض', simulatedTime: 'الوقت المحاكى', maximum: 'الذروة', speed: 'السرعة', nextAtLocation: 'الكسوف القادم في موقعك', covered: 'محجوب', localMaximum: 'الذروة المحلية', sunAltitude: 'ارتفاع الشمس',
+  timeTravel: 'رحلة عبر الزمن', eventsHeading: 'الأحداث الماضية والقادمة', calculatedHere: 'تُحسب جميع البيانات مباشرة على هذا الجهاز.', past: 'ماضٍ', next: 'التالي', upcoming: 'قادم', localCalculation: 'UMBRA · حساب فلكي محلي', noInternet: 'لا يتطلب اتصالًا بالإنترنت',
+  regionPartial: 'كسوف جزئي عالمي', regionArctic: 'العروض القطبية الشمالية', regionAntarctic: 'العروض القطبية الجنوبية', regionNorthAmerica: 'أمريكا الشمالية', regionSouthAtlantic: 'أمريكا الجنوبية / الأطلسي', regionEuropeAtlantic: 'أوروبا / شمال الأطلسي', regionAfrica: 'أفريقيا / المتوسط', regionAsia: 'آسيا', regionPacific: 'أستراليا / الهادئ', regionOcean: 'المنطقة المحيطية الوسطى',
+  chooseLanguage: 'اختر اللغة', tipOffline: 'تعمل الحسابات وبيانات الخرائط بالكامل دون إنترنت.', tipLocation: 'اختر مكان حساب الكسوف الخاص بك.', tipType: 'نوع الكسوف الشمسي في موقع الذروة العالمية.', tipCoverage: 'نسبة سطح الشمس المرئي التي يحجبها القمر.', tipAxis: 'أقصر مسافة بين محور ظل القمر ومركز الأرض.', tipGlobe: 'اسحب للتدوير ومرّر للتكبير. يوضح الخط البرتقالي مسار مركز الظل.', tipPlay: 'بدء المحاكاة أو إيقافها مؤقتًا.', tipTimeline: 'وقت بين ثلاث ساعات قبل الذروة وثلاث ساعات بعدها.', tipSpeed: 'تغيير سرعة تشغيل المحاكاة.', tipLocal: 'الكسوف الشمسي القادم المرئي من هذا الموقع.', tipEvent: 'عرض هذا الحدث على الكرة الأرضية.',
+}
+
+const hi: typeof de = {
+  brandSubtitle: 'ग्रहण की स्थानीय गणना', offline: 'ऑफ़लाइन तैयार', myLocation: 'मेरा स्थान', nextGlobal: 'अगली वैश्विक घटना', selectedGlobal: 'चुनी गई वैश्विक घटना',
+  totalTitle: 'पूर्ण सूर्य ग्रहण', annularTitle: 'वलयाकार सूर्य ग्रहण', partialTitle: 'आंशिक सूर्य ग्रहण', total: 'पूर्ण', annular: 'वलयाकार', partial: 'आंशिक', type: 'प्रकार', coverage: 'आवरण', locationDependent: 'स्थान पर निर्भर', axis: 'छाया अक्ष',
+  shadowCenter: 'छाया केंद्र', outsideEarth: 'पृथ्वी की सतह से बाहर', simulatedTime: 'अनुकृत समय', maximum: 'अधिकतम', speed: 'गति', nextAtLocation: 'आपके स्थान पर अगला ग्रहण', covered: 'ढका', localMaximum: 'स्थानीय अधिकतम', sunAltitude: 'सूर्य की ऊँचाई',
+  timeTravel: 'समय यात्रा', eventsHeading: 'बीती और आने वाली घटनाएँ', calculatedHere: 'सभी आँकड़े इसी उपकरण पर गणना किए जाते हैं।', past: 'बीत चुका', next: 'अगला', upcoming: 'आगामी', localCalculation: 'UMBRA · स्थानीय खगोलीय गणना', noInternet: 'इंटरनेट की आवश्यकता नहीं',
+  regionPartial: 'वैश्विक आंशिक ग्रहण', regionArctic: 'आर्कटिक अक्षांश', regionAntarctic: 'अंटार्कटिक अक्षांश', regionNorthAmerica: 'उत्तरी अमेरिका', regionSouthAtlantic: 'दक्षिणी अमेरिका / अटलांटिक', regionEuropeAtlantic: 'यूरोप / उत्तरी अटलांटिक', regionAfrica: 'अफ्रीका / भूमध्यसागर', regionAsia: 'एशिया', regionPacific: 'ऑस्ट्रेलिया / प्रशांत', regionOcean: 'मध्य महासागरीय क्षेत्र',
+  chooseLanguage: 'भाषा चुनें', tipOffline: 'गणना और मानचित्र इंटरनेट के बिना पूरी तरह काम करते हैं।', tipLocation: 'अपनी ग्रहण गणना के लिए स्थान चुनें।', tipType: 'वैश्विक अधिकतम स्थान पर सूर्य ग्रहण का प्रकार।', tipCoverage: 'चंद्रमा द्वारा ढकी सूर्य की दिखाई देने वाली सतह का भाग।', tipAxis: 'चंद्र छाया अक्ष और पृथ्वी के केंद्र के बीच न्यूनतम दूरी।', tipGlobe: 'घुमाने के लिए खींचें और ज़ूम के लिए स्क्रॉल करें। नारंगी रेखा छाया केंद्र का मार्ग दिखाती है।', tipPlay: 'अनुकरण शुरू या रोकें।', tipTimeline: 'अधिकतम से तीन घंटे पहले से तीन घंटे बाद तक का समय।', tipSpeed: 'अनुकरण की गति बदलें।', tipLocal: 'इस स्थान से दिखाई देने वाला अगला सूर्य ग्रहण।', tipEvent: 'इस घटना को ग्लोब पर दिखाएँ।',
+}
+
+const ja: typeof de = {
+  brandSubtitle: '日食を端末内で計算', offline: 'オフライン対応', myLocation: '現在地', nextGlobal: '次の世界的イベント', selectedGlobal: '選択した世界的イベント',
+  totalTitle: '皆既日食', annularTitle: '金環日食', partialTitle: '部分日食', total: '皆既', annular: '金環', partial: '部分', type: '種類', coverage: '食分', locationDependent: '場所による', axis: '影軸',
+  shadowCenter: '影の中心', outsideEarth: '地表の外側', simulatedTime: 'シミュレーション時刻', maximum: '最大食', speed: '速度', nextAtLocation: '現在地での次の日食', covered: '遮蔽', localMaximum: '現地の最大食', sunAltitude: '太陽高度',
+  timeTravel: 'タイムトラベル', eventsHeading: '過去と今後のイベント', calculatedHere: 'すべてのデータはこの端末上で直接計算されます。', past: '過去', next: '次', upcoming: '今後', localCalculation: 'UMBRA · ローカル天文計算', noInternet: 'インターネット接続不要',
+  regionPartial: '世界的な部分日食', regionArctic: '北極圏', regionAntarctic: '南極圏', regionNorthAmerica: '北アメリカ', regionSouthAtlantic: '南アメリカ / 大西洋', regionEuropeAtlantic: 'ヨーロッパ / 北大西洋', regionAfrica: 'アフリカ / 地中海', regionAsia: 'アジア', regionPacific: 'オーストラリア / 太平洋', regionOcean: '中央海洋域',
+  chooseLanguage: '言語を選択', tipOffline: '計算と地図データはインターネットなしで動作します。', tipLocation: '個人の日食計算に使用する場所を選びます。', tipType: '世界最大食地点での日食の種類です。', tipCoverage: '月が覆う太陽の可視面の割合です。', tipAxis: '月の影軸と地球中心との最短距離です。', tipGlobe: 'ドラッグで回転、スクロールで拡大します。オレンジ線は影の中心の経路です。', tipPlay: 'シミュレーションを開始または一時停止します。', tipTimeline: '最大食の3時間前から3時間後までの時刻です。', tipSpeed: '再生速度を変更します。', tipLocal: 'この観測地点から見える次の日食です。', tipEvent: 'このイベントを地球儀に表示します。',
+}
+
+const hr: typeof de = {
+  brandSubtitle: 'Pomrčine izračunate lokalno', offline: 'SPREMNO IZVAN MREŽE', myLocation: 'Moja lokacija', nextGlobal: 'SLJEDEĆI GLOBALNI DOGAĐAJ', selectedGlobal: 'ODABRANI GLOBALNI DOGAĐAJ',
+  totalTitle: 'Potpuna pomrčina Sunca', annularTitle: 'Prstenasta pomrčina Sunca', partialTitle: 'Djelomična pomrčina Sunca', total: 'Potpuna', annular: 'Prstenasta', partial: 'Djelomična', type: 'Vrsta', coverage: 'Pokrivenost', locationDependent: 'ovisno o lokaciji', axis: 'Os sjene',
+  shadowCenter: 'Središte sjene', outsideEarth: 'izvan Zemljine površine', simulatedTime: 'SIMULIRANO VRIJEME', maximum: 'Maksimum', speed: 'Brzina', nextAtLocation: 'SLJEDEĆA POMRČINA NA TVOJOJ LOKACIJI', covered: 'pokriveno', localMaximum: 'Lokalni maksimum', sunAltitude: 'Visina Sunca',
+  timeTravel: 'PUTOVANJE KROZ VRIJEME', eventsHeading: 'Prošli i budući događaji', calculatedHere: 'Svi se podaci izračunavaju izravno na ovom uređaju.', past: 'PROŠLO', next: 'SLJEDEĆE', upcoming: 'DOLAZI', localCalculation: 'UMBRA · Lokalni astronomski izračun', noInternet: 'Internetska veza nije potrebna',
+  regionPartial: 'Globalna djelomična pomrčina', regionArctic: 'Arktičke širine', regionAntarctic: 'Antarktičke širine', regionNorthAmerica: 'Sjeverna Amerika', regionSouthAtlantic: 'Južna Amerika / Atlantik', regionEuropeAtlantic: 'Europa / Sjeverni Atlantik', regionAfrica: 'Afrika / Sredozemlje', regionAsia: 'Azija', regionPacific: 'Australija / Pacifik', regionOcean: 'Središnja oceanska zona',
+  chooseLanguage: 'Odaberi jezik', tipOffline: 'Izračuni i karte rade potpuno bez interneta.', tipLocation: 'Odaberi mjesto za osobni izračun pomrčine.', tipType: 'Vrsta pomrčine Sunca na mjestu globalnog maksimuma.', tipCoverage: 'Udio vidljive Sunčeve površine koji prekriva Mjesec.', tipAxis: 'Najmanja udaljenost osi Mjesečeve sjene od središta Zemlje.', tipGlobe: 'Povuci za okretanje i pomiči za povećavanje. Narančasta linija prikazuje put središta sjene.', tipPlay: 'Pokreni ili pauziraj simulaciju.', tipTimeline: 'Vrijeme unutar tri sata prije i poslije maksimuma.', tipSpeed: 'Promijeni brzinu simulacije.', tipLocal: 'Sljedeća pomrčina vidljiva s ove lokacije.', tipEvent: 'Prikaži ovaj događaj na globusu.',
+}
+
+const dictionaries: Record<Locale, typeof de> = { de, en, es, fr, pt, zh, ar, hi, ja, hr }
+
+export function translator(locale: Locale) {
+  return (key: TranslationKey) => dictionaries[locale][key]
+}
+
+export function languageInfo(locale: Locale) {
+  return languages.find((language) => language.code === locale) ?? languages[0]
+}

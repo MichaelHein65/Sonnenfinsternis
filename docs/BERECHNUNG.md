@@ -1,0 +1,28 @@
+# Astronomische Berechnung
+
+## Ereignissuche
+
+Globale Sonnenfinsternisse werden mit `SearchGlobalSolarEclipse` und `NextGlobalSolarEclipse` aus Astronomy Engine gesucht. Das Ergebnis enthält Zeitpunkt des Maximums, Finsternistyp, Abstand der Schattenachse sowie – bei zentralen Finsternissen – geografische Koordinaten.
+
+Lokale Ereignisse werden mit `SearchLocalSolarEclipse` für Breite und Länge des Beobachtungsortes berechnet. Daraus stammen Beginn, Maximum, Ende, Bedeckung und Sonnenhöhe.
+
+## Bewegte Schattenachse
+
+Für jeden Simulationszeitpunkt werden geozentrische Vektoren von Sonne und Mond berechnet. Die Achse des Mondschattens verläuft vom Mond von der Sonne fort. Diese Achse wird zunächst vom J2000-Bezugssystem in das wahre Äquatorsystem des Datums gedreht.
+
+Die Erde wird als abgeplattetes Ellipsoid behandelt. Zur Schnittberechnung wird die Z-Achse so skaliert, dass das Ellipsoid zu einer Kugel wird. Die Geradengleichung der Schattenachse wird anschließend mit dieser Kugel geschnitten. Nach Rückskalierung entstehen geodätische Breite und Länge. Die geografische Länge berücksichtigt die Greenwich-Sternzeit und damit die Erddrehung.
+
+## Schattenbahn
+
+Die Bahn wird in Schritten von drei Minuten innerhalb eines Fensters von sieben Stunden um das Maximum abgetastet. Nur Zeitpunkte mit einem realen Schnittpunkt zwischen Schattenachse und Erdoberfläche werden dargestellt. Die Bedienzeitleiste selbst umfasst sechs Stunden.
+
+## Kartendarstellung
+
+Die Ländergrenzen stammen aus `world-atlas`. D3-Geo schneidet Polygone korrekt an der internationalen Datumsgrenze. Dadurch werden geografische Grenzen nicht fälschlich quer über den Globus verbunden.
+
+## Grenzen
+
+- Atmosphärische Refraktion wird in der globalen Schattenbahndarstellung nicht als eigenes Wettermodell simuliert.
+- Gelände, Gebäude, Bewölkung und lokale Horizontabschattung sind nicht enthalten.
+- Regionsnamen sind bewusst grobe, offline verfügbare Einordnungen.
+- Die Anwendung ersetzt keine sicherheitskritische oder wissenschaftlich zertifizierte Beobachtungsplanung.

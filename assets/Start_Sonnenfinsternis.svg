@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="110" y1="80" x2="890" y2="950" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20384E"/>
+      <stop offset="0.48" stop-color="#101C2A"/>
+      <stop offset="1" stop-color="#070C14"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="translate(512 500) rotate(90) scale(390)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E9A94A" stop-opacity="0.22"/>
+      <stop offset="0.5" stop-color="#E9A94A" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#E9A94A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="318" y1="296" x2="702" y2="718" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD58A"/>
+      <stop offset="0.5" stop-color="#E9A94A"/>
+      <stop offset="1" stop-color="#B86F22"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="28" stdDeviation="36" flood-color="#000000" flood-opacity="0.62"/>
+    </filter>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <clipPath id="tile"><rect x="44" y="44" width="936" height="936" rx="214"/></clipPath>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <rect x="44" y="44" width="936" height="936" rx="214" fill="url(#bg)"/>
+    <rect x="45.5" y="45.5" width="933" height="933" rx="212.5" fill="none" stroke="#C28A42" stroke-opacity="0.3" stroke-width="3"/>
+  </g>
+
+  <g clip-path="url(#tile)">
+    <circle cx="512" cy="500" r="420" fill="url(#halo)"/>
+    <path d="M-30 695C208 585 380 633 522 714C678 802 846 803 1065 689" fill="none" stroke="#79B6C8" stroke-opacity="0.08" stroke-width="3"/>
+    <path d="M-65 744C190 631 382 681 530 763C684 848 861 854 1080 734" fill="none" stroke="#79B6C8" stroke-opacity="0.05" stroke-width="2"/>
+    <g fill="#DCEBFA">
+      <circle cx="180" cy="223" r="3" opacity="0.55"/><circle cx="823" cy="244" r="2.4" opacity="0.4"/>
+      <circle cx="760" cy="765" r="2" opacity="0.34"/><circle cx="249" cy="785" r="2.8" opacity="0.36"/>
+      <circle cx="862" cy="548" r="1.8" opacity="0.45"/><circle cx="151" cy="526" r="1.8" opacity="0.42"/>
+    </g>
+  </g>
+
+  <circle cx="512" cy="500" r="282" fill="none" stroke="#E9A94A" stroke-opacity="0.1" stroke-width="35" filter="url(#glow)"/>
+  <circle cx="512" cy="500" r="294" fill="none" stroke="#E9A94A" stroke-opacity="0.9" stroke-width="6"/>
+  <circle cx="512" cy="500" r="252" fill="none" stroke="#E9A94A" stroke-opacity="0.28" stroke-width="2"/>
+
+  <circle cx="512" cy="500" r="186" fill="#08131F" stroke="#294155" stroke-width="4"/>
+  <path d="M512 314A186 186 0 0 0 512 686A154 186 0 0 1 512 314Z" fill="#F0B456"/>
+  <path d="M512 330A170 170 0 0 0 512 670" fill="none" stroke="#FFD68D" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+
+  <path d="M729 306a294 294 0 0 1 63 80" fill="none" stroke="#FFD58A" stroke-width="12" stroke-linecap="round"/>
+  <path d="M269 667a294 294 0 0 1-37-91" fill="none" stroke="#E9A94A" stroke-width="7" stroke-linecap="round" opacity="0.65"/>
+  <circle cx="512" cy="500" r="330" fill="none" stroke="#A7D1DE" stroke-opacity="0.08" stroke-width="2" stroke-dasharray="3 19"/>
+</svg>

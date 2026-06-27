@@ -1,0 +1,41 @@
+#!/bin/zsh
+
+EXECUTABLE_DIR="${0:A:h}"
+ROOT="$(cd "$EXECUTABLE_DIR/../Resources" && pwd)"
+URL="http://127.0.0.1:5173"
+LOG_DIR="$HOME/Library/Logs/UMBRA"
+CACHE_DIR="$HOME/Library/Caches/UMBRA"
+mkdir -p "$LOG_DIR" "$CACHE_DIR"
+
+show_error() {
+  /usr/bin/osascript -e "display alert \"Start_Sonnenfinsternis\" message \"$1\" as critical" >/dev/null 2>&1
+}
+
+server_ready() {
+  /usr/bin/curl -fsS "$URL" 2>/dev/null | /usr/bin/grep -q '<title>Umbra · Sonnenfinsternisse</title>'
+}
+
+if ! server_ready; then
+  NODE="$(/bin/zsh -lic 'command -v node' 2>/dev/null | tail -n 1)"
+  [[ -x "$NODE" ]] || NODE="/usr/local/bin/node"
+  [[ -x "$NODE" ]] || NODE="/opt/homebrew/bin/node"
+  [[ -x "$NODE" ]] || { show_error "Node.js wurde nicht gefunden."; exit 1; }
+
+  nohup "$NODE" "$ROOT/server.mjs" >"$LOG_DIR/server.log" 2>&1 &
+  echo $! >"$CACHE_DIR/server.pid"
+  for _ in {1..50}; do server_ready && break; sleep 0.1; done
+fi
+
+server_ready || { show_error "Der lokale UMBRA-Server konnte nicht gestartet werden."; exit 1; }
+
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+FIREFOX="/Applications/Firefox.app/Contents/MacOS/firefox"
+if [[ -x "$CHROME" ]]; then
+  nohup "$CHROME" --user-data-dir="$CACHE_DIR/Chrome" --kiosk --no-first-run --no-default-browser-check "$URL" >"$LOG_DIR/browser.log" 2>&1 &
+elif [[ -x "$FIREFOX" ]]; then
+  nohup "$FIREFOX" --kiosk "$URL" >"$LOG_DIR/browser.log" 2>&1 &
+else
+  /usr/bin/open -a Safari "$URL"
+  sleep 1.5
+  /usr/bin/osascript -e 'tell application "Safari" to activate' -e 'tell application "System Events" to keystroke "f" using {command down, control down}' >/dev/null 2>&1
+fi
