@@ -142,7 +142,7 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .section-heading span { color: var(--gold); font-size: 10pt; letter-spacing: .12em; }
 .section-heading h2 { font-family: Iowan Old Style, Baskerville, Georgia, serif; font-size: 35px; font-weight: 500; margin: 9px 0 0; }
 .section-heading p { color: #63717d; font-size: 10pt; }
-.event-grid { display: grid; grid-template-columns: repeat(13, minmax(185px, 1fr)); gap: 10px; overflow-x: auto; padding: 1px 1px 18px; scrollbar-color: #34424d transparent; }
+.event-grid { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(185px, 1fr); gap: 10px; overflow-x: auto; overflow-anchor: none; padding: 1px 1px 18px; scrollbar-color: #34424d transparent; }
 .event-card { min-height: 210px; text-align: left; padding: 16px; border: 1px solid var(--line); background: rgba(13,18,26,.8); cursor: pointer; transition: .2s ease; }
 .event-card:hover { transform: translateY(-3px); border-color: rgba(232,169,74,.35); }
 .event-card.selected { border-color: rgba(232,169,74,.7); background: linear-gradient(145deg, rgba(232,169,74,.1), rgba(15,21,30,.9)); box-shadow: inset 0 3px var(--gold); }
@@ -158,6 +158,9 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .event-card > strong small { display: block; color: #56646f; font: 10pt ui-monospace, SFMono-Regular, Menlo, monospace; margin-top: 3px; }
 .event-card p { margin: 15px 0 5px; font-size: 10pt; color: #cbd3d8; }
 .event-card > span { color: #5e6c77; font-size: 10pt; }
+.events-actions { display: flex; justify-content: center; margin-top: 10px; }
+.events-actions button { padding: 10px 18px; border: 1px solid rgba(233,169,74,.35); border-radius: 3px; color: #d9b475; background: rgba(233,169,74,.06); font-size: 10pt; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: .2s ease; }
+.events-actions button:hover { border-color: rgba(233,169,74,.65); background: rgba(233,169,74,.12); }
 .legend { margin-top: 18px; display: flex; justify-content: flex-end; gap: 20px; color: #687681; font-size: 10pt; }
 .legend span { display: flex; align-items: center; gap: 6px; }
 .legend i { width: 5px; height: 5px; border-radius: 50%; }

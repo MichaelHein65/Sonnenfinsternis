@@ -43,6 +43,8 @@ Die Zeitachse umfasst sechs Stunden: drei Stunden vor bis drei Stunden nach dem 
 
 Die Karten im Abschnitt „Zeitreise“ wechseln zwischen vergangenen und kommenden Ereignissen. Nach der Auswahl werden Datum, Region, Finsternistyp, Schattenbahn und Simulation neu berechnet.
 
+Mit „10 weitere berechnen“ werden jeweils zehn zusätzliche zukünftige Ereignisse lokal ermittelt und rechts an die waagerechte Ereignisleiste angefügt. Dadurch bleibt die Startansicht kompakt, während beispielsweise eine erst 2030 am gewählten Ort sichtbare Finsternis dennoch aufgerufen werden kann.
+
 ## Tooltips
 
 Erklärungsbedürftige Felder zeigen nach fünf Sekunden ruhigem Hover einen Hilfetext. Bei Tastaturbedienung erscheint der Tooltip unmittelbar beim Fokus.

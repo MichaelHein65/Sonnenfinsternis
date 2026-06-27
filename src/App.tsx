@@ -60,7 +60,8 @@ function savedLocation(): Location {
 
 export function App() {
   const now = useMemo(() => new Date(), [])
-  const events = useMemo(() => findEclipses(now), [now])
+  const [futureEventCount, setFutureEventCount] = useState(8)
+  const events = useMemo(() => findEclipses(now, 5, futureEventCount), [now, futureEventCount])
   const initialIndex = Math.max(0, events.findIndex((event) => event.peak >= now))
   const [selectedIndex, setSelectedIndex] = useState(initialIndex)
   const [progress, setProgress] = useState(0)
@@ -79,6 +80,7 @@ export function App() {
   const lastFrame = useRef<number | null>(null)
   const languageMenuRef = useRef<HTMLDetailsElement>(null)
   const locationSearchRef = useRef<HTMLDivElement>(null)
+  const eventGridRef = useRef<HTMLDivElement>(null)
   const language = languageInfo(locale)
   const t = useMemo(() => translator(locale), [locale])
   const dateLong = useMemo(() => new Intl.DateTimeFormat(language.locale, { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }), [language.locale])
@@ -136,6 +138,17 @@ export function App() {
     setProgress(0)
     setPlaying(true)
   }, [selectedIndex])
+
+  useEffect(() => {
+    if (futureEventCount <= 8) return
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const grid = eventGridRef.current
+        const firstNewCard = grid?.querySelectorAll<HTMLElement>('.event-card')[futureEventCount - 5]
+        if (grid && firstNewCard) grid.scrollLeft = Math.max(0, firstNewCard.offsetLeft - grid.offsetLeft)
+      })
+    })
+  }, [futureEventCount])
 
   useEffect(() => {
     if (!playing) { lastFrame.current = null; return }
@@ -322,7 +335,7 @@ export function App() {
 
       <section className="events-section">
         <div className="section-heading"><div><span>{t('timeTravel')}</span><h2>{t('eventsHeading')}</h2></div><p>{t('calculatedHere')}</p></div>
-        <div className="event-grid">
+        <div className="event-grid" ref={eventGridRef}>
           {events.map((item, index) => {
             const past = item.peak < now
             const itemRegion = t(regionKeys[regionLabel(item.latitude, item.longitude)] ?? 'regionOcean')
@@ -336,6 +349,7 @@ export function App() {
             )
           })}
         </div>
+        <div className="events-actions"><button type="button" onClick={() => setFutureEventCount((count) => count + 10)}>+ {t('loadMoreEvents')}</button></div>
         <div className="legend"><span><i className="total" /> {t('total')}</span><span><i className="annular" /> {t('annular')}</span><span><i className="partial" /> {t('partial')}</span></div>
       </section>
 

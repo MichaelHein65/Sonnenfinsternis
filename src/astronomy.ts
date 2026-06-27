@@ -81,12 +81,12 @@ function eclipseType(kind: EclipseKind): EclipseType {
 }
 
 export function findEclipses(center = new Date(), pastCount = 5, futureCount = 8): EclipseEvent[] {
-  const start = new Date(Date.UTC(center.getUTCFullYear() - 5, 0, 1))
-  const end = new Date(Date.UTC(center.getUTCFullYear() + 8, 11, 31))
+  const start = new Date(Date.UTC(center.getUTCFullYear() - Math.max(5, Math.ceil(pastCount / 2) + 2), 0, 1))
   const all: EclipseEvent[] = []
   let item = SearchGlobalSolarEclipse(start)
+  let futureFound = 0
 
-  while (item.peak.date <= end) {
+  while (item.peak.date < center || futureFound < futureCount) {
     all.push({
       id: item.peak.date.toISOString(),
       peak: item.peak.date,
@@ -96,6 +96,7 @@ export function findEclipses(center = new Date(), pastCount = 5, futureCount = 8
       obscuration: item.obscuration,
       distance: item.distance,
     })
+    if (item.peak.date >= center) futureFound += 1
     item = NextGlobalSolarEclipse(item.peak)
   }
 

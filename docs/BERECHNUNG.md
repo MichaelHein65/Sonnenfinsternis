@@ -39,4 +39,5 @@ Die Ländergrenzen stammen aus `world-atlas`. D3-Geo schneidet Polygone korrekt 
 - Regionsnamen sind bewusst grobe, offline verfügbare Einordnungen.
 - Sonnenaufgang und Sonnenuntergang werden mit der oberen Sonnenkante und atmosphärischer Refraktion berechnet. Die Ausgabe verwendet die offline aus den Koordinaten ermittelte IANA-Zeitzone des Beobachtungsorts.
 - Lokale Finsternisse werden auf den Zeitraum mit Sonnenzentrum über dem Horizont beschnitten. Liegt das geometrische Maximum außerhalb dieses Fensters, werden sichtbares Maximum, Bedeckung und Finsternistyp für den erreichbaren Tagesabschnitt neu bestimmt.
+- Die globale Ereignissuche besitzt keine feste Achtjahresgrenze. Die Oberfläche fordert bei Bedarf jeweils zehn weitere Ereignisse von Astronomy Engine an.
 - Die Anwendung ersetzt keine sicherheitskritische oder wissenschaftlich zertifizierte Beobachtungsplanung.
