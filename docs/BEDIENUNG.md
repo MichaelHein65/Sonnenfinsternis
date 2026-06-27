@@ -19,7 +19,9 @@ Die aktuelle Sprache wird rechts oben über die Flagge ausgewählt. UMBRA speich
 
 ## Globus
 
-Der Globus lässt sich mit der Maus drehen und über das Scrollrad vergrößern. Die orange Linie zeigt ausschließlich die berechnete Bahn des Schattenzentrums. Dezente Linien in der Kartentextur sind das geografische Gradnetz.
+Der Globus lässt sich mit der Maus drehen und über das Scrollrad vergrößern. Die goldene, transparente Fläche zeigt das zum aktuellen Zeitpunkt sichtbare Gebiet der Finsternis. Die orange Linie zeigt ausschließlich die berechnete Bahn des Schattenzentrums. Dezente Linien in der Kartentextur sind das geografische Gradnetz.
+
+Bei rein partiellen globalen Ereignissen fehlt die orange Linie: Der Kernschatten verfehlt die Erde, während der Halbschatten weiterhin eine große partielle Sichtbarkeitszone erzeugt. Eine Erklärung am Globusrand weist darauf hin.
 
 ## Simulation
 

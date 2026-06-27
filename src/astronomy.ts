@@ -18,6 +18,9 @@ import {
 const EARTH_RADIUS_KM = 6378.137
 const EARTH_FLATTENING = 0.996647180302104
 const RAD2DEG = 180 / Math.PI
+const DEG2RAD = Math.PI / 180
+const SUN_RADIUS_KM = 695700
+const MOON_RADIUS_KM = 1737.4
 
 export type EclipseType = 'Total' | 'Ringförmig' | 'Partiell'
 
@@ -35,6 +38,12 @@ export interface ShadowPoint {
   time: Date
   latitude: number
   longitude: number
+}
+
+export interface VisibilityPoint {
+  latitude: number
+  longitude: number
+  intensity: number
 }
 
 export interface LocalEclipse {
@@ -123,6 +132,42 @@ export function calculateShadowPath(event: EclipseEvent): ShadowPoint[] {
     const time = new Date(event.peak.getTime() + minutes * 60_000)
     const point = shadowPointAt(time)
     if (point) points.push(point)
+  }
+  return points
+}
+
+/** Samples the instantaneous penumbral footprint on the Earth's surface. */
+export function calculateVisibilityArea(time: Date, stepDegrees = 3): VisibilityPoint[] {
+  const shadow = moonShadow(time)
+  const rotation = Rotation_EQJ_EQD(shadow.time)
+  const direction = RotateVector(rotation, shadow.direction)
+  const earthFromMoon = RotateVector(rotation, shadow.target)
+  const directionLengthSquared = direction.x ** 2 + direction.y ** 2 + direction.z ** 2
+  const gast = 15 * SiderealTime(shadow.time) * DEG2RAD
+  const earthRadiusAu = EARTH_RADIUS_KM / KM_PER_AU
+  const points: VisibilityPoint[] = []
+
+  for (let latitude = -90 + stepDegrees / 2; latitude < 90; latitude += stepDegrees) {
+    const lat = latitude * DEG2RAD
+    const cosLat = Math.cos(lat)
+    const z = earthRadiusAu * Math.sin(lat) * EARTH_FLATTENING
+    for (let longitude = -180; longitude < 180; longitude += stepDegrees) {
+      const angle = longitude * DEG2RAD + gast
+      const observer = {
+        x: earthFromMoon.x + earthRadiusAu * cosLat * Math.cos(angle),
+        y: earthFromMoon.y + earthRadiusAu * cosLat * Math.sin(angle),
+        z: earthFromMoon.z + z,
+      }
+      const u = (direction.x * observer.x + direction.y * observer.y + direction.z * observer.z) / directionLengthSquared
+      const dx = u * direction.x - observer.x
+      const dy = u * direction.y - observer.y
+      const dz = u * direction.z - observer.z
+      const distance = KM_PER_AU * Math.hypot(dx, dy, dz)
+      const penumbraRadius = -SUN_RADIUS_KM + (1 + u) * (SUN_RADIUS_KM + MOON_RADIUS_KM)
+      if (penumbraRadius > 0 && distance <= penumbraRadius) {
+        points.push({ latitude, longitude, intensity: 1 - distance / penumbraRadius })
+      }
+    }
   }
   return points
 }

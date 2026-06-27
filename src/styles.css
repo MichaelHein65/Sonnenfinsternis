@@ -78,6 +78,12 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .globe-label span, .globe-label strong { display: block; }
 .globe-label span { font-size: 10pt; letter-spacing: .09em; color: var(--gold); text-transform: uppercase; }
 .globe-label strong { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10pt; font-weight: 400; color: #9aa9b3; margin-top: 5px; }
+.track-explanation { position: absolute; z-index: 4; right: 2%; top: 43%; width: min(285px, 38%); padding: 12px 14px; border: 1px solid rgba(211,225,235,.14); border-radius: 5px; background: rgba(7,12,19,.72); backdrop-filter: blur(12px); pointer-events: none; }
+.track-explanation span, .track-explanation strong { display: block; }
+.track-explanation span { color: var(--gold); font-size: 10pt; letter-spacing: .08em; text-transform: uppercase; }
+.track-explanation span i { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: #e9a94a; box-shadow: 0 0 12px rgba(233,169,74,.75); }
+.track-explanation strong { margin-top: 7px; color: #a6b2ba; font-size: 10pt; font-weight: 400; line-height: 1.45; }
+.track-explanation.no-track { border-color: rgba(233,169,74,.28); }
 .simulation-card { position: absolute; z-index: 4; bottom: 0; left: 7%; right: 2%; min-height: 138px; padding: 26px 22px 18px 85px; background: rgba(10,15,23,.86); border: 1px solid rgba(211,225,235,.16); backdrop-filter: blur(18px); box-shadow: 0 20px 60px rgba(0,0,0,.3); }
 .play-button { position: absolute; left: 20px; top: 31px; width: 47px; height: 47px; display: grid; place-items: center; border: 1px solid rgba(232,169,74,.55); border-radius: 50%; background: rgba(232,169,74,.08); color: var(--gold); cursor: pointer; }
 .play-button:hover { background: rgba(232,169,74,.18); }
@@ -157,6 +163,7 @@ footer { display: flex; justify-content: space-between; color: #46535e; border-t
   .date-display > strong { font-size: 53px; }
   .visual-stage { min-height: 540px; overflow: hidden; }
   .globe { inset: -2% -16% 16%; }
+  .track-explanation { top: 49%; right: 10px; width: min(270px, 72%); }
   .simulation-card { left: 0; right: 0; padding-left: 72px; }
   .play-button { left: 14px; }
   .speed-control { display: none; }

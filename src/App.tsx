@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Globe } from './Globe'
 import {
   calculateShadowPath,
+  calculateVisibilityArea,
   coordinateLabel,
   findEclipses,
   findLocalEclipse,
@@ -78,10 +79,13 @@ export function App() {
 
   const event = events[selectedIndex]
   const path = useMemo(() => calculateShadowPath(event), [event])
+  const eventVisibilityPoints = useMemo(() => calculateVisibilityArea(event.peak), [event])
   const startTime = new Date(event.peak.getTime() - 3 * 3_600_000)
   const endTime = new Date(event.peak.getTime() + 3 * 3_600_000)
   const currentTime = new Date(startTime.getTime() + progress * (endTime.getTime() - startTime.getTime()))
   const currentPoint = useMemo(() => shadowPointAt(currentTime), [currentTime.getTime()])
+  const visibilityTime = Math.round(currentTime.getTime() / 120_000) * 120_000
+  const visibilityPoints = useMemo(() => calculateVisibilityArea(new Date(visibilityTime)), [visibilityTime])
   const location = LOCATIONS[locationIndex]
   const localEclipse = useMemo(() => findLocalEclipse(location.latitude, location.longitude, now), [location, now])
   const regionName = t(regionKeys[regionLabel(event.latitude, event.longitude)] ?? 'regionOcean')
@@ -172,10 +176,14 @@ export function App() {
         </div>
 
         <div className="visual-stage">
-          <Globe event={event} path={path} currentPoint={currentPoint} tooltip={t('tipGlobe')} />
+          <Globe event={event} path={path} currentPoint={currentPoint} visibilityPoints={visibilityPoints} focusPoints={eventVisibilityPoints} tooltip={t('tipGlobe')} />
           <div className="globe-label">
             <span>{t('shadowCenter')}</span>
             <strong dir={currentPoint ? 'ltr' : undefined}>{currentPoint ? coordinateLabel(currentPoint.latitude, currentPoint.longitude).replace(' O', ` ${eastLabel}`) : t('outsideEarth')}</strong>
+          </div>
+          <div className={`track-explanation ${path.length > 0 ? 'has-track' : 'no-track'}`}>
+            <span><i />{t('shadowTrack')}</span>
+            <strong>{path.length > 0 ? t('trackAvailable') : t('trackUnavailable')}</strong>
           </div>
           <div className="simulation-card">
             <div className="sim-time"><small>{t('simulatedTime')}</small><strong>{timeFormat.format(currentTime)}</strong><span>{dateShort.format(currentTime)}</span></div>

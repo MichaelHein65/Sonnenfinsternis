@@ -16,6 +16,12 @@ Die Erde wird als abgeplattetes Ellipsoid behandelt. Zur Schnittberechnung wird 
 
 Die Bahn wird in Schritten von drei Minuten innerhalb eines Fensters von sieben Stunden um das Maximum abgetastet. Nur Zeitpunkte mit einem realen Schnittpunkt zwischen Schattenachse und Erdoberfläche werden dargestellt. Die Bedienzeitleiste selbst umfasst sechs Stunden.
 
+## Sichtbarkeitsgebiet
+
+Für den aktuellen Simulationszeitpunkt wird die Erdoberfläche in einem Drei-Grad-Raster abgetastet. Für jeden Punkt wird sein Abstand von der zeitabhängigen Mondschattenachse mit dem dortigen Radius des Halbschattenkegels verglichen. Punkte innerhalb des Halbschattens bilden die goldene Sichtbarkeitsfläche. Die Berechnung wird während der Animation in Zwei-Minuten-Schritten aktualisiert.
+
+Bei totalen und ringförmigen Ereignissen liegen Sichtbarkeitsfläche und Zentrallinie gemeinsam vor. Bei rein partiellen Ereignissen schneidet die Kernschattenachse die Erde nicht; deshalb wird nur die Halbschattenfläche dargestellt.
+
 ## Kartendarstellung
 
 Die Ländergrenzen stammen aus `world-atlas`. D3-Geo schneidet Polygone korrekt an der internationalen Datumsgrenze. Dadurch werden geografische Grenzen nicht fälschlich quer über den Globus verbunden.

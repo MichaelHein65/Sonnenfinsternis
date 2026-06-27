@@ -4,12 +4,14 @@ import { geoEquirectangular, geoPath } from 'd3-geo'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { feature } from 'topojson-client'
 import countries from 'world-atlas/countries-110m.json'
-import type { EclipseEvent, ShadowPoint } from './astronomy'
+import type { EclipseEvent, ShadowPoint, VisibilityPoint } from './astronomy'
 
 interface GlobeProps {
   event: EclipseEvent
   path: ShadowPoint[]
   currentPoint: ShadowPoint | null
+  visibilityPoints: VisibilityPoint[]
+  focusPoints: VisibilityPoint[]
   tooltip: string
 }
 
@@ -17,6 +19,7 @@ type GlobeObjects = {
   pathLine: THREE.Line
   marker: THREE.Mesh
   pulse: THREE.Mesh
+  visibilityCloud: THREE.Points
   focus: THREE.Group
 }
 
@@ -73,7 +76,7 @@ function createEarthTexture(): THREE.CanvasTexture {
   return texture
 }
 
-export function Globe({ event, path, currentPoint, tooltip }: GlobeProps) {
+export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints, tooltip }: GlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const objectsRef = useRef<GlobeObjects | null>(null)
 
@@ -133,10 +136,15 @@ export function Globe({ event, path, currentPoint, tooltip }: GlobeProps) {
 
     const pathLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: '#ffb95a', transparent: true, opacity: 0.9 }))
     focus.add(pathLine)
+    const visibilityCloud = new THREE.Points(
+      new THREE.BufferGeometry(),
+      new THREE.PointsMaterial({ size: 0.075, sizeAttenuation: true, vertexColors: true, transparent: true, opacity: 0.34, depthWrite: false, blending: THREE.AdditiveBlending }),
+    )
+    focus.add(visibilityCloud)
     const marker = new THREE.Mesh(new THREE.SphereGeometry(0.045, 20, 20), new THREE.MeshBasicMaterial({ color: '#fff4d4' }))
     const pulse = new THREE.Mesh(new THREE.RingGeometry(0.07, 0.105, 48), new THREE.MeshBasicMaterial({ color: '#ffb04a', transparent: true, opacity: 0.85, side: THREE.DoubleSide }))
     focus.add(marker, pulse)
-    objectsRef.current = { pathLine, marker, pulse, focus }
+    objectsRef.current = { pathLine, marker, pulse, visibilityCloud, focus }
 
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
@@ -179,11 +187,40 @@ export function Globe({ event, path, currentPoint, tooltip }: GlobeProps) {
     if (!objects) return
     objects.pathLine.geometry.dispose()
     objects.pathLine.geometry = new THREE.BufferGeometry().setFromPoints(path.map((point) => vectorForCoordinate(point.latitude, point.longitude, 2.018)))
-    if (event.latitude != null && event.longitude != null) {
-      objects.focus.rotation.y = THREE.MathUtils.degToRad(event.longitude)
-      objects.focus.rotation.x = THREE.MathUtils.degToRad(-event.latitude * 0.18)
+    let focusLatitude = event.latitude
+    let focusLongitude = event.longitude
+    if ((focusLatitude == null || focusLongitude == null) && focusPoints.length > 0) {
+      const center = new THREE.Vector3()
+      for (const point of focusPoints) center.add(vectorForCoordinate(point.latitude, point.longitude, 1).normalize())
+      center.normalize()
+      focusLatitude = THREE.MathUtils.radToDeg(Math.asin(center.y))
+      focusLongitude = THREE.MathUtils.radToDeg(Math.atan2(-center.z, center.x))
     }
-  }, [event, path])
+    if (focusLatitude != null && focusLongitude != null) {
+      objects.focus.rotation.y = THREE.MathUtils.degToRad(-90 - focusLongitude)
+      objects.focus.rotation.x = THREE.MathUtils.degToRad(-focusLatitude * 0.18)
+    }
+  }, [event, path, focusPoints])
+
+  useEffect(() => {
+    const objects = objectsRef.current
+    if (!objects) return
+    const positions: number[] = []
+    const colors: number[] = []
+    const edgeColor = new THREE.Color('#b98236')
+    const centerColor = new THREE.Color('#ffe1a0')
+    for (const point of visibilityPoints) {
+      const position = vectorForCoordinate(point.latitude, point.longitude, 2.028)
+      positions.push(position.x, position.y, position.z)
+      const color = edgeColor.clone().lerp(centerColor, Math.min(1, point.intensity * 1.8))
+      colors.push(color.r, color.g, color.b)
+    }
+    objects.visibilityCloud.geometry.dispose()
+    const geometry = new THREE.BufferGeometry()
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
+    objects.visibilityCloud.geometry = geometry
+  }, [visibilityPoints])
 
   useEffect(() => {
     const objects = objectsRef.current
