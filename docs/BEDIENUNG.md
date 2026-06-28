@@ -10,7 +10,9 @@ Die aktuelle Sprache wird rechts oben über die Flagge ausgewählt. UMBRA speich
 
 ## Beobachtungsort
 
-Über „Mein Standort“ wird der Ort für die persönliche Berechnung eingegeben. Während der Eingabe erscheinen passende Treffer mit Land. Die Suche toleriert fehlende Akzente, verbreitete internationale Schreibweisen und kleinere Tippfehler. Mit den Pfeiltasten wird ein Treffer markiert, mit der Eingabetaste übernommen und mit Escape verworfen. Das Ortsverzeichnis bleibt vollständig auf dem Mac; es wird kein Online-Kartendienst abgefragt.
+Über „Mein Standort“ wird der Ort für die persönliche Berechnung eingegeben. Während der Eingabe erscheinen passende Treffer mit Land. Die lokale Suche toleriert fehlende Akzente, verbreitete internationale Schreibweisen und kleinere Tippfehler. Sichere Treffer lassen sich mit den Pfeiltasten markieren und mit der Eingabetaste übernehmen; bei einer unsicheren Schreibweise startet die Eingabetaste stattdessen die genauere Suche. Escape verwirft die Eingabe.
+
+„Ort genauer suchen“ ist eine optionale KI-gestützte Hilfe für unvollständige, mehrdeutige oder stark fehlerhafte Angaben. Nur bei ihrem Aufruf wird der eingegebene Text an die OpenAI API gesendet. Die daraus ermittelten Namen werden nach Möglichkeit wieder mit dem lokalen Ortsverzeichnis abgeglichen und als „korrigiert“ gekennzeichnet. Ohne Internet oder API-Konfiguration bleibt die vollständige lokale Suche verfügbar.
 
 Der lokale Bereich zeigt:
 

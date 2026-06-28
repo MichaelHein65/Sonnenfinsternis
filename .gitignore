@@ -7,3 +7,6 @@ vite.config.d.ts
 Start_Sonnenfinsternis.app/
 Sonnenfinsternis
 *.log
+.env
+.env.*
+!.env.example

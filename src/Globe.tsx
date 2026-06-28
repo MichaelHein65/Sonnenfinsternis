@@ -90,6 +90,19 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
   const [rendererGeneration, setRendererGeneration] = useState(0)
   const [rendererStatus, setRendererStatus] = useState<'ready' | 'recovering' | 'failed'>('ready')
 
+  const recoverPageOnce = (reason: string) => {
+    const recoveryKey = 'umbra-webgl-page-recovery'
+    if (sessionStorage.getItem(recoveryKey) === 'attempted') {
+      setRendererStatus('failed')
+      logDiagnostic('webgl-page-recovery-exhausted', { reason })
+      return
+    }
+    sessionStorage.setItem(recoveryKey, 'attempted')
+    setRendererStatus('recovering')
+    logDiagnostic('webgl-page-recovery', { reason })
+    window.setTimeout(() => window.location.reload(), 900)
+  }
+
   useEffect(() => {
     const container = containerRef.current!
     const scene = new THREE.Scene()
@@ -99,8 +112,13 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
     try {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     } catch (error) {
-      logDiagnostic('webgl-initialization-failed', { message: String(error), generation: rendererGeneration })
-      setRendererStatus('failed')
+      const attempt = retryCountRef.current + 1
+      retryCountRef.current = attempt
+      logDiagnostic('webgl-initialization-failed', { message: String(error), generation: rendererGeneration, attempt })
+      if (attempt <= 3) {
+        setRendererStatus('recovering')
+        window.setTimeout(() => setRendererGeneration((value) => value + 1), 800)
+      } else recoverPageOnce('initialization')
       return
     }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
@@ -109,7 +127,10 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
     setRendererStatus('ready')
 
     let restartTimer: number | undefined
-    let stableTimer = window.setTimeout(() => { retryCountRef.current = 0 }, 10_000)
+    let stableTimer = window.setTimeout(() => {
+      retryCountRef.current = 0
+      sessionStorage.removeItem('umbra-webgl-page-recovery')
+    }, 10_000)
     const handleContextLost = (event: Event) => {
       event.preventDefault()
       window.clearTimeout(stableTimer)
@@ -117,7 +138,7 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
       retryCountRef.current = attempt
       logDiagnostic('webgl-context-lost', { attempt, generation: rendererGeneration })
       if (attempt > 3) {
-        setRendererStatus('failed')
+        recoverPageOnce('context-lost')
         return
       }
       setRendererStatus('recovering')
@@ -129,7 +150,10 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
       retryCountRef.current = 0
       setRendererStatus('ready')
       logDiagnostic('webgl-context-restored', { generation: rendererGeneration })
-      stableTimer = window.setTimeout(() => { retryCountRef.current = 0 }, 10_000)
+      stableTimer = window.setTimeout(() => {
+        retryCountRef.current = 0
+        sessionStorage.removeItem('umbra-webgl-page-recovery')
+      }, 10_000)
     }
     renderer.domElement.addEventListener('webglcontextlost', handleContextLost)
     renderer.domElement.addEventListener('webglcontextrestored', handleContextRestored)

@@ -35,17 +35,19 @@ const overrides: Record<string, { name?: string; aliases: string[] }> = {
   'Gothenburg|SE': { name: 'Göteborg', aliases: ['Gothenburg', 'Goeteborg', 'Göteborg'] },
 }
 
-const copy: Record<Locale, { placeholder: string; noResults: string; loading: string }> = {
-  de: { placeholder: 'Ort eingeben …', noResults: 'Kein passender Ort gefunden', loading: 'Ortsverzeichnis wird geladen …' },
-  en: { placeholder: 'Enter a place …', noResults: 'No matching place found', loading: 'Loading place directory …' },
-  es: { placeholder: 'Introducir lugar …', noResults: 'No se encontró ningún lugar', loading: 'Cargando lugares …' },
-  fr: { placeholder: 'Saisir un lieu …', noResults: 'Aucun lieu correspondant', loading: 'Chargement des lieux …' },
-  pt: { placeholder: 'Introduzir local …', noResults: 'Nenhum local encontrado', loading: 'A carregar locais …' },
-  zh: { placeholder: '输入地点…', noResults: '未找到匹配地点', loading: '正在加载地点…' },
-  ar: { placeholder: 'أدخل مكانًا…', noResults: 'لم يتم العثور على مكان مطابق', loading: 'جارٍ تحميل الأماكن…' },
-  hi: { placeholder: 'स्थान लिखें…', noResults: 'कोई मिलता-जुलता स्थान नहीं मिला', loading: 'स्थान सूची लोड हो रही है…' },
-  ja: { placeholder: '場所を入力…', noResults: '一致する場所がありません', loading: '場所一覧を読み込み中…' },
-  hr: { placeholder: 'Unesite mjesto …', noResults: 'Nije pronađeno odgovarajuće mjesto', loading: 'Učitavanje popisa mjesta …' },
+type LocationCopy = { placeholder: string; noResults: string; loading: string; precise: string; searching: string; assisted: string; unavailable: string }
+
+const copy: Record<Locale, LocationCopy> = {
+  de: { placeholder: 'Ort eingeben …', noResults: 'Kein passender Ort gefunden', loading: 'Ortsverzeichnis wird geladen …', precise: 'Ort genauer suchen', searching: 'Schreibweise wird geprüft …', assisted: 'korrigiert', unavailable: 'Die genauere Suche ist derzeit nicht verfügbar.' },
+  en: { placeholder: 'Enter a place …', noResults: 'No matching place found', loading: 'Loading place directory …', precise: 'Search more precisely', searching: 'Checking the spelling …', assisted: 'corrected', unavailable: 'Precise search is currently unavailable.' },
+  es: { placeholder: 'Introducir lugar …', noResults: 'No se encontró ningún lugar', loading: 'Cargando lugares …', precise: 'Buscar con más precisión', searching: 'Comprobando la escritura …', assisted: 'corregido', unavailable: 'La búsqueda precisa no está disponible.' },
+  fr: { placeholder: 'Saisir un lieu …', noResults: 'Aucun lieu correspondant', loading: 'Chargement des lieux …', precise: 'Rechercher plus précisément', searching: 'Vérification de l’orthographe …', assisted: 'corrigé', unavailable: 'La recherche précise est indisponible.' },
+  pt: { placeholder: 'Introduzir local …', noResults: 'Nenhum local encontrado', loading: 'A carregar locais …', precise: 'Pesquisar com mais precisão', searching: 'A verificar a escrita …', assisted: 'corrigido', unavailable: 'A pesquisa precisa não está disponível.' },
+  zh: { placeholder: '输入地点…', noResults: '未找到匹配地点', loading: '正在加载地点…', precise: '更精确地搜索地点', searching: '正在检查拼写…', assisted: '已修正', unavailable: '精确搜索目前不可用。' },
+  ar: { placeholder: 'أدخل مكانًا…', noResults: 'لم يتم العثور على مكان مطابق', loading: 'جارٍ تحميل الأماكن…', precise: 'بحث أكثر دقة', searching: 'جارٍ التحقق من الكتابة…', assisted: 'مصحح', unavailable: 'البحث الدقيق غير متاح حاليًا.' },
+  hi: { placeholder: 'स्थान लिखें…', noResults: 'कोई मिलता-जुलता स्थान नहीं मिला', loading: 'स्थान सूची लोड हो रही है…', precise: 'अधिक सटीक खोजें', searching: 'वर्तनी जाँची जा रही है…', assisted: 'सुधारा गया', unavailable: 'सटीक खोज अभी उपलब्ध नहीं है।' },
+  ja: { placeholder: '場所を入力…', noResults: '一致する場所がありません', loading: '場所一覧を読み込み中…', precise: 'より正確に検索', searching: '表記を確認中…', assisted: '修正済み', unavailable: '詳細検索は現在利用できません。' },
+  hr: { placeholder: 'Unesite mjesto …', noResults: 'Nije pronađeno odgovarajuće mjesto', loading: 'Učitavanje popisa mjesta …', precise: 'Pretraži preciznije', searching: 'Provjera pravopisa …', assisted: 'ispravljeno', unavailable: 'Precizna pretraga trenutačno nije dostupna.' },
 }
 
 export function locationCopy(locale: Locale) {
@@ -96,6 +98,12 @@ export async function loadLocationIndex() {
 }
 
 export function searchLocations(index: IndexedLocation[], query: string, limit = 7): Location[] {
+  return searchLocationMatches(index, query, limit).map(({ location }) => location)
+}
+
+export type LocationMatch = { location: Location; score: number }
+
+export function searchLocationMatches(index: IndexedLocation[], query: string, limit = 7): LocationMatch[] {
   const term = normalize(query)
   const simple = simplify(query)
   if (!term) return []
@@ -130,5 +138,5 @@ export function searchLocations(index: IndexedLocation[], query: string, limit =
   return matches
     .sort((a, b) => a.score - b.score || b.location.population - a.location.population)
     .slice(0, limit)
-    .map(({ location: { terms: _terms, simpleTerms: _simpleTerms, ...location } }) => location)
+    .map(({ score, location: { terms: _terms, simpleTerms: _simpleTerms, ...location } }) => ({ location, score }))
 }

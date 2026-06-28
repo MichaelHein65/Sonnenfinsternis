@@ -15,7 +15,9 @@ import {
 } from './astronomy'
 import { languageInfo, languages, translator, type Locale, type TranslationKey } from './i18n'
 import { LocalSunView } from './LocalSunView'
-import { DEFAULT_LOCATION, loadLocationIndex, locationCopy, searchLocations, type Location } from './locations'
+import { DEFAULT_LOCATION, loadLocationIndex, locationCopy, searchLocationMatches, searchLocations, type Location } from './locations'
+
+type LocationSuggestion = Location & { matchScore?: number; assisted?: boolean; note?: string }
 
 function typeClass(type: EclipseEvent['type']) {
   return type === 'Total' ? 'total' : type === 'Ringförmig' ? 'annular' : 'partial'
@@ -69,9 +71,11 @@ export function App() {
   const [speed, setSpeed] = useState(600)
   const [location, setLocation] = useState<Location>(savedLocation)
   const [locationQuery, setLocationQuery] = useState(location.name)
-  const [locationOptions, setLocationOptions] = useState<Location[]>([])
+  const [locationOptions, setLocationOptions] = useState<LocationSuggestion[]>([])
   const [locationOpen, setLocationOpen] = useState(false)
   const [locationLoading, setLocationLoading] = useState(false)
+  const [locationAssistLoading, setLocationAssistLoading] = useState(false)
+  const [locationAssistError, setLocationAssistError] = useState(false)
   const [activeLocation, setActiveLocation] = useState(0)
   const [locale, setLocale] = useState<Locale>(() => {
     const stored = localStorage.getItem('umbra-language')
@@ -127,8 +131,9 @@ export function App() {
     setLocationLoading(true)
     loadLocationIndex().then((index) => {
       if (cancelled) return
-      setLocationOptions(searchLocations(index, locationQuery))
+      setLocationOptions(searchLocationMatches(index, locationQuery).map(({ location: item, score }) => ({ ...item, matchScore: score })))
       setActiveLocation(0)
+      setLocationAssistError(false)
       setLocationLoading(false)
     })
     return () => { cancelled = true }
@@ -180,6 +185,35 @@ export function App() {
     setLocationOpen(false)
   }
 
+  const searchLocationPrecisely = async () => {
+    const query = locationQuery.trim()
+    if (query.length < 2 || locationAssistLoading) return
+    setLocationAssistLoading(true)
+    setLocationAssistError(false)
+    setLocationOpen(true)
+    try {
+      const response = await fetch('/__umbra_location', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, locale }),
+      })
+      if (!response.ok) throw new Error(`location resolver: ${response.status}`)
+      const data = await response.json() as { candidates?: Array<Location & { note?: string }> }
+      const index = await loadLocationIndex()
+      const resolved = (data.candidates ?? []).map<LocationSuggestion>((candidate) => {
+        const local = searchLocations(index, candidate.name, 15).find((item) => item.country === candidate.country)
+        return { ...(local ?? candidate), assisted: true, note: candidate.note }
+      })
+      setLocationOptions(resolved)
+      setActiveLocation(0)
+      setLocationAssistError(resolved.length === 0)
+    } catch {
+      setLocationAssistError(true)
+    } finally {
+      setLocationAssistLoading(false)
+    }
+  }
+
   const handleLocationKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault()
@@ -188,9 +222,12 @@ export function App() {
     } else if (event.key === 'ArrowUp') {
       event.preventDefault()
       setActiveLocation((value) => Math.max(0, value - 1))
-    } else if (event.key === 'Enter' && locationOptions[activeLocation]) {
+    } else if (event.key === 'Enter' && locationOptions[activeLocation]?.matchScore != null && locationOptions[activeLocation].matchScore! <= 20) {
       event.preventDefault()
       selectLocation(locationOptions[activeLocation])
+    } else if (event.key === 'Enter') {
+      event.preventDefault()
+      void searchLocationPrecisely()
     } else if (event.key === 'Escape') {
       setLocationOpen(false)
       setLocationQuery(location.name)
@@ -238,7 +275,7 @@ export function App() {
             {locationOpen && locationQuery.trim() && (
               <div className="location-results" id="location-results" role="listbox">
                 {locationLoading && <span className="location-message">{locationText.loading}</span>}
-                {!locationLoading && locationOptions.map((item, index) => (
+                {!locationLoading && !locationAssistLoading && locationOptions.map((item, index) => (
                   <button
                     type="button"
                     id={`location-option-${index}`}
@@ -250,10 +287,17 @@ export function App() {
                     onMouseEnter={() => setActiveLocation(index)}
                     onClick={() => selectLocation(item)}
                   >
-                    <strong>{item.name}</strong><span>{countryNames.of(item.country) ?? item.country}</span>
+                    <strong>{item.name}{item.assisted && <small>{locationText.assisted}</small>}</strong><span>{countryNames.of(item.country) ?? item.country}</span>
                   </button>
                 ))}
-                {!locationLoading && locationOptions.length === 0 && <span className="location-message">{locationText.noResults}</span>}
+                {locationAssistLoading && <span className="location-message">{locationText.searching}</span>}
+                {!locationLoading && !locationAssistLoading && locationOptions.length === 0 && <span className="location-message">{locationText.noResults}</span>}
+                {locationAssistError && !locationAssistLoading && <span className="location-message location-error">{locationText.unavailable}</span>}
+                {!locationLoading && !locationAssistLoading && (
+                  <button className="location-precise" type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => void searchLocationPrecisely()}>
+                    <span aria-hidden="true">✦</span><strong>{locationText.precise}</strong>
+                  </button>
+                )}
               </div>
             )}
           </div>

@@ -11,9 +11,10 @@ UMBRA ist eine vollständig lokal laufende Browser-Anwendung für globale und or
 - lokale Berechnung für frei eingebbare Beobachtungsorte
 - nächste am Beobachtungsort tatsächlich über dem Horizont sichtbare Finsternis, einschließlich partieller Ereignisse
 - fehlertolerante Offline-Ortssuche mit mehr als 135.000 Orten und internationalen Namensvarianten
+- optionale KI-gestützte Korrektur schwieriger, mehrdeutiger oder unvollständiger Ortsangaben
 - animierter 3D-Globus mit berechneter Schattenbahn
 - dezenter Marker für den gewählten Beobachtungsort auf dem Globus
-- automatische Wiederherstellung des Globus nach einem verlorenen Grafik-Kontext
+- mehrstufige automatische Wiederherstellung des Globus nach einem verlorenen Grafik-Kontext
 - Simulation von drei Stunden vor bis drei Stunden nach dem Maximum
 - synchronisierte lokale Sonnenscheibe mit bewegter Mondbedeckung
 - Sonnenaufgang, Sonnenuntergang und Polartag/-nacht in der Zeitzone des Beobachtungsorts
@@ -63,5 +64,7 @@ Dadurch entsteht `Start_Sonnenfinsternis.app` im Projektordner. Die App enthält
 ## Genauigkeit und Sicherheit
 
 Die Anwendung ist für Planung, Information und Visualisierung vorgesehen. Sichtbedingungen hängen zusätzlich von Wetter, Horizont, Gelände und atmosphärischen Effekten ab. Niemals ohne geeigneten zertifizierten Augenschutz direkt in die Sonne schauen.
+
+Die astronomischen Berechnungen und die reguläre Ortssuche funktionieren vollständig lokal. Nur die ausdrücklich aufgerufene Funktion „Ort genauer suchen“ sendet den eingegebenen Ortsnamen an die OpenAI API. Der API-Schlüssel liegt außerhalb der App unter `~/Library/Application Support/UMBRA/.env` und wird nie an den Browser übertragen.
 
 Die Zeitangaben verwenden die auf dem Mac eingestellte Zeitzone.

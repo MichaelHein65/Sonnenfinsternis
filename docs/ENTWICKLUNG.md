@@ -41,7 +41,11 @@ Zusätzlich sollten Sprachwechsel, RTL-Ansicht, Standortsuche einschließlich Ti
 
 Der Launcher schreibt Chrome-Meldungen nach `~/Library/Logs/UMBRA/browser.log` und Servermeldungen nach `~/Library/Logs/UMBRA/server.log`. Laufzeitfehler der Web-App sowie verlorene oder wiederhergestellte WebGL-Kontexte werden zusätzlich als JSON-Zeilen in `~/Library/Logs/UMBRA/app.log` protokolliert und als begrenzte Historie im lokalen Browser-Speicher gehalten.
 
-Der dedizierte Chrome-Start deaktiviert Skia Graphite, weil dieser Compositor unabhängig vom Three.js-Globus den gesamten GPU-Prozess beenden kann. Verliert WebGL dennoch seinen Kontext, blendet UMBRA die beschädigte Zeichenfläche aus und baut den Globus automatisch neu auf. Nach drei erfolglosen Versuchen erscheint eine manuelle Neustarttaste.
+Der dedizierte Chrome-Start deaktiviert Skia Graphite, weil dieser Compositor unabhängig vom Three.js-Globus den gesamten GPU-Prozess beenden kann. Verliert WebGL dennoch seinen Kontext, blendet UMBRA die beschädigte Zeichenfläche aus und baut den Globus automatisch neu auf. Nach drei erfolglosen Renderer-Neustarts lädt UMBRA die Seite einmal automatisch neu. Erst wenn auch diese vollständige Wiederherstellung scheitert, erscheint eine manuelle Neustarttaste; eine Sitzungsmarkierung verhindert Endlosschleifen.
+
+## Optionale KI-Ortssuche
+
+Die Vorlage `.env.example` dokumentiert die Variablen `OPENAI_API_KEY` und `OPENAI_LOCATION_MODEL`. Für den macOS-Launcher gehört die echte Konfiguration nach `~/Library/Application Support/UMBRA/.env` und muss nur für den eigenen Benutzer lesbar sein. `.env`-Dateien sind von Git ausgeschlossen. Der Server verwendet die Responses API mit einem strikten JSON-Schema und protokolliert niemals den Schlüssel.
 
 ## Neue Sprache hinzufügen
 

@@ -35,8 +35,12 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .location-results button { width: 100%; padding: 10px 11px; display: flex; align-items: baseline; justify-content: space-between; gap: 14px; border: 1px solid transparent; border-radius: 5px; background: transparent; text-align: left; cursor: pointer; }
 .location-results button:hover, .location-results button.active { border-color: rgba(233,169,74,.42); background: rgba(233,169,74,.1); }
 .location-results strong { overflow: hidden; color: #e6edf1; font-size: 10pt; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.location-results strong small { margin-left: 7px; color: var(--gold); font-size: 10pt; font-weight: 400; opacity: .8; }
 .location-results button span { flex: 0 0 auto; color: #72808c; font-size: 10pt; }
 .location-message { display: block; padding: 12px 11px; color: #83919c; font-size: 10pt; }
+.location-message.location-error { color: #b58c77; }
+.location-results .location-precise { margin-top: 5px; padding-top: 11px; justify-content: flex-start; border-top-color: rgba(211,225,235,.13); border-radius: 0 0 5px 5px; }
+.location-results .location-precise span { color: var(--gold); }
 [dir="rtl"] .location-results { right: auto; left: 0; }
 .language-picker { position: relative; }
 .language-picker summary { min-width: 55px; height: 42px; padding: 0 10px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid var(--line); border-radius: 5px; background: rgba(255,255,255,.025); cursor: pointer; list-style: none; }
