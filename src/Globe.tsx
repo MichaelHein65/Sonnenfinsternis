@@ -110,7 +110,7 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
     camera.position.set(0, 0.45, 6.3)
     let renderer: THREE.WebGLRenderer
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
     } catch (error) {
       const attempt = retryCountRef.current + 1
       retryCountRef.current = attempt

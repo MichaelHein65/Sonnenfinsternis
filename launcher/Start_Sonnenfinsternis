@@ -31,7 +31,15 @@ server_ready || { show_error "Der lokale UMBRA-Server konnte nicht gestartet wer
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 FIREFOX="/Applications/Firefox.app/Contents/MacOS/firefox"
 if [[ -x "$CHROME" ]]; then
-  nohup "$CHROME" --user-data-dir="$CACHE_DIR/Chrome" --kiosk --no-first-run --no-default-browser-check --disable-skia-graphite "$URL" >"$LOG_DIR/browser.log" 2>&1 &
+  nohup "$CHROME" \
+    --user-data-dir="$CACHE_DIR/Chrome" \
+    --kiosk \
+    --no-first-run \
+    --no-default-browser-check \
+    --disable-skia-graphite \
+    --disable-features=SkiaGraphite \
+    "$URL" >"$LOG_DIR/browser.log" 2>&1 &
+  echo $! >"$CACHE_DIR/browser.pid"
 elif [[ -x "$FIREFOX" ]]; then
   nohup "$FIREFOX" --kiosk "$URL" >"$LOG_DIR/browser.log" 2>&1 &
 else

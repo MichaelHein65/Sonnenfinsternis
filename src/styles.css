@@ -57,6 +57,7 @@ svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-l
 .has-tooltip:hover::after { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 5s, 5s, 5s; }
 .has-tooltip:focus-visible::after { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
 .topbar .has-tooltip::after { top: calc(100% + 10px); bottom: auto; }
+.topbar .location-search:focus-within::after { opacity: 0; visibility: hidden; transition-delay: 0s; }
 .globe.has-tooltip::after { left: 55%; bottom: 12%; }
 .event-card.has-tooltip::after { left: 15px; transform: translate(0, 3px); }
 .event-card.has-tooltip:hover::after, .event-card.has-tooltip:focus-visible::after { transform: translate(0, 0); }

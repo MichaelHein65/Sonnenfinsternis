@@ -41,7 +41,7 @@ Zusätzlich sollten Sprachwechsel, RTL-Ansicht, Standortsuche einschließlich Ti
 
 Der Launcher schreibt Chrome-Meldungen nach `~/Library/Logs/UMBRA/browser.log` und Servermeldungen nach `~/Library/Logs/UMBRA/server.log`. Laufzeitfehler der Web-App sowie verlorene oder wiederhergestellte WebGL-Kontexte werden zusätzlich als JSON-Zeilen in `~/Library/Logs/UMBRA/app.log` protokolliert und als begrenzte Historie im lokalen Browser-Speicher gehalten.
 
-Der dedizierte Chrome-Start deaktiviert Skia Graphite, weil dieser Compositor unabhängig vom Three.js-Globus den gesamten GPU-Prozess beenden kann. Verliert WebGL dennoch seinen Kontext, blendet UMBRA die beschädigte Zeichenfläche aus und baut den Globus automatisch neu auf. Nach drei erfolglosen Renderer-Neustarts lädt UMBRA die Seite einmal automatisch neu. Erst wenn auch diese vollständige Wiederherstellung scheitert, erscheint eine manuelle Neustarttaste; eine Sitzungsmarkierung verhindert Endlosschleifen.
+Der dedizierte Chrome-Start deaktiviert Skia Graphite sowohl über den direkten Chromium-Schalter als auch über die gleichnamige Feature-Flag, weil dieser Compositor unabhängig vom Three.js-Globus den gesamten GPU-Prozess beenden kann. Der WebGL-Renderer bittet auf Macs mit automatischer Grafikumschaltung zusätzlich um die leistungsfähige GPU. Verliert WebGL dennoch seinen Kontext, blendet UMBRA die beschädigte Zeichenfläche aus und baut den Globus automatisch neu auf. Nach drei erfolglosen Renderer-Neustarts lädt UMBRA die Seite einmal automatisch neu. Erst wenn auch diese vollständige Wiederherstellung scheitert, erscheint eine manuelle Neustarttaste; eine Sitzungsmarkierung verhindert Endlosschleifen.
 
 ## Optionale KI-Ortssuche
 
