@@ -215,6 +215,7 @@ export function App() {
   }
 
   const handleLocationKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const activeOption = locationOptions[activeLocation]
     if (event.key === 'ArrowDown') {
       event.preventDefault()
       setLocationOpen(true)
@@ -222,9 +223,9 @@ export function App() {
     } else if (event.key === 'ArrowUp') {
       event.preventDefault()
       setActiveLocation((value) => Math.max(0, value - 1))
-    } else if (event.key === 'Enter' && locationOptions[activeLocation]?.matchScore != null && locationOptions[activeLocation].matchScore! <= 20) {
+    } else if (event.key === 'Enter' && activeOption && (activeOption.assisted || (activeOption.matchScore != null && activeOption.matchScore <= 20))) {
       event.preventDefault()
-      selectLocation(locationOptions[activeLocation])
+      selectLocation(activeOption)
     } else if (event.key === 'Enter') {
       event.preventDefault()
       void searchLocationPrecisely()
@@ -283,9 +284,11 @@ export function App() {
                     aria-selected={index === activeLocation}
                     className={index === activeLocation ? 'active' : ''}
                     key={`${item.name}-${item.country}-${item.latitude}`}
-                    onMouseDown={(event) => event.preventDefault()}
+                    onMouseDown={(event) => {
+                      event.preventDefault()
+                      selectLocation(item)
+                    }}
                     onMouseEnter={() => setActiveLocation(index)}
-                    onClick={() => selectLocation(item)}
                   >
                     <strong>{item.name}{item.assisted && <small>{locationText.assisted}</small>}</strong><span>{countryNames.of(item.country) ?? item.country}</span>
                   </button>
