@@ -23,6 +23,7 @@ Benutzeroberfläche (React)
 - `src/astronomy.ts`: Ereignissuche, lokale Berechnung und Schnittpunkt der Schattenachse
 - `tz-lookup`: lokale Offline-Zeitzone aus den Koordinaten des Beobachtungsorts
 - `src/locations.ts`: lazy geladene Offline-Ortssuche, Namensvarianten und Tippfehlertoleranz
+- `src/diagnostics.ts`: lokale Fehlerhistorie und Übermittlung an das Launcher-Protokoll
 - `src/data/cities.json`: kompakter, lokal gebündelter GeoNames-Ortsindex
 - `src/i18n.ts`: zehn vollständige Sprachfassungen
 - `src/styles.css`: responsives Design, Tooltips und Sprachwahl

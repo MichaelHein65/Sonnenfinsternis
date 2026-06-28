@@ -1,10 +1,14 @@
-import { createReadStream, existsSync, statSync } from 'node:fs'
+import { appendFile, createReadStream, existsSync, mkdirSync, statSync } from 'node:fs'
 import { createServer } from 'node:http'
+import { homedir } from 'node:os'
 import { extname, join, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(fileURLToPath(new URL('.', import.meta.url)), 'dist')
+const logDirectory = join(homedir(), 'Library', 'Logs', 'UMBRA')
+const appLog = join(logDirectory, 'app.log')
 const port = 5173
+mkdirSync(logDirectory, { recursive: true })
 const types = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
@@ -17,6 +21,17 @@ const types = {
 
 createServer((request, response) => {
   const requestPath = decodeURIComponent((request.url ?? '/').split('?')[0])
+  if (request.method === 'POST' && requestPath === '/__umbra_log') {
+    let body = ''
+    request.setEncoding('utf8')
+    request.on('data', (chunk) => { if (body.length < 65_536) body += chunk })
+    request.on('end', () => {
+      appendFile(appLog, `${body.replace(/[\r\n]+/g, ' ')}\n`, () => undefined)
+      response.writeHead(204, { 'Cache-Control': 'no-store' })
+      response.end()
+    })
+    return
+  }
   const safePath = normalize(requestPath).replace(/^(\.\.[/\\])+/, '')
   let file = join(root, safePath === '/' ? 'index.html' : safePath)
 

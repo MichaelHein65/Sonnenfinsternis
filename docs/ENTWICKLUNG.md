@@ -37,6 +37,12 @@ npm run build
 
 Zusätzlich sollten Sprachwechsel, RTL-Ansicht, Standortsuche einschließlich Tippfehlern und Namensvarianten, Ereigniswechsel, Simulation sowie Desktop- und Mobilansicht im Browser geprüft werden.
 
+## Diagnose
+
+Der Launcher schreibt Chrome-Meldungen nach `~/Library/Logs/UMBRA/browser.log` und Servermeldungen nach `~/Library/Logs/UMBRA/server.log`. Laufzeitfehler der Web-App sowie verlorene oder wiederhergestellte WebGL-Kontexte werden zusätzlich als JSON-Zeilen in `~/Library/Logs/UMBRA/app.log` protokolliert und als begrenzte Historie im lokalen Browser-Speicher gehalten.
+
+Der dedizierte Chrome-Start deaktiviert Skia Graphite, weil dieser Compositor unabhängig vom Three.js-Globus den gesamten GPU-Prozess beenden kann. Verliert WebGL dennoch seinen Kontext, blendet UMBRA die beschädigte Zeichenfläche aus und baut den Globus automatisch neu auf. Nach drei erfolglosen Versuchen erscheint eine manuelle Neustarttaste.
+
 ## Neue Sprache hinzufügen
 
 1. Sprache in `languages` in `src/i18n.ts` ergänzen.

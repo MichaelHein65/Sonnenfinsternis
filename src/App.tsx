@@ -210,7 +210,12 @@ export function App() {
             className="location-search has-tooltip"
             data-tooltip={t('tipLocation')}
             ref={locationSearchRef}
-            onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setLocationOpen(false) }}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setLocationOpen(false)
+                setLocationQuery(location.name)
+              }
+            }}
           >
             <Icon name="pin" />
             <span className="location-input-wrap"><small>{t('myLocation')}</small>
@@ -285,7 +290,7 @@ export function App() {
         </div>
 
         <div className="visual-stage">
-          <Globe event={event} path={path} currentPoint={currentPoint} visibilityPoints={visibilityPoints} focusPoints={eventVisibilityPoints} observerLatitude={location.latitude} observerLongitude={location.longitude} tooltip={t('tipGlobe')} />
+          <Globe event={event} path={path} currentPoint={currentPoint} visibilityPoints={visibilityPoints} focusPoints={eventVisibilityPoints} observerLatitude={location.latitude} observerLongitude={location.longitude} tooltip={t('tipGlobe')} recoveryLabel={t('globeRecovering')} retryLabel={t('globeRetry')} />
           <div className="globe-label">
             <span>{t('shadowCenter')}</span>
             <strong dir={currentPoint ? 'ltr' : undefined}>{currentPoint ? coordinateLabel(currentPoint.latitude, currentPoint.longitude).replace(' O', ` ${eastLabel}`) : t('outsideEarth')}</strong>

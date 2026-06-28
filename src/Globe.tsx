@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { geoEquirectangular, geoPath } from 'd3-geo'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { feature } from 'topojson-client'
 import countries from 'world-atlas/countries-110m.json'
 import type { EclipseEvent, ShadowPoint, VisibilityPoint } from './astronomy'
+import { logDiagnostic } from './diagnostics'
 
 interface GlobeProps {
   event: EclipseEvent
@@ -15,6 +16,8 @@ interface GlobeProps {
   observerLatitude: number
   observerLongitude: number
   tooltip: string
+  recoveryLabel: string
+  retryLabel: string
 }
 
 type GlobeObjects = {
@@ -80,19 +83,56 @@ function createEarthTexture(): THREE.CanvasTexture {
   return texture
 }
 
-export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints, observerLatitude, observerLongitude, tooltip }: GlobeProps) {
+export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints, observerLatitude, observerLongitude, tooltip, recoveryLabel, retryLabel }: GlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const objectsRef = useRef<GlobeObjects | null>(null)
+  const retryCountRef = useRef(0)
+  const [rendererGeneration, setRendererGeneration] = useState(0)
+  const [rendererStatus, setRendererStatus] = useState<'ready' | 'recovering' | 'failed'>('ready')
 
   useEffect(() => {
     const container = containerRef.current!
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100)
     camera.position.set(0, 0.45, 6.3)
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    let renderer: THREE.WebGLRenderer
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    } catch (error) {
+      logDiagnostic('webgl-initialization-failed', { message: String(error), generation: rendererGeneration })
+      setRendererStatus('failed')
+      return
+    }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
     renderer.outputColorSpace = THREE.SRGBColorSpace
     container.appendChild(renderer.domElement)
+    setRendererStatus('ready')
+
+    let restartTimer: number | undefined
+    let stableTimer = window.setTimeout(() => { retryCountRef.current = 0 }, 10_000)
+    const handleContextLost = (event: Event) => {
+      event.preventDefault()
+      window.clearTimeout(stableTimer)
+      const attempt = retryCountRef.current + 1
+      retryCountRef.current = attempt
+      logDiagnostic('webgl-context-lost', { attempt, generation: rendererGeneration })
+      if (attempt > 3) {
+        setRendererStatus('failed')
+        return
+      }
+      setRendererStatus('recovering')
+      restartTimer = window.setTimeout(() => setRendererGeneration((value) => value + 1), 800)
+    }
+    const handleContextRestored = () => {
+      if (restartTimer) window.clearTimeout(restartTimer)
+      restartTimer = undefined
+      retryCountRef.current = 0
+      setRendererStatus('ready')
+      logDiagnostic('webgl-context-restored', { generation: rendererGeneration })
+      stableTimer = window.setTimeout(() => { retryCountRef.current = 0 }, 10_000)
+    }
+    renderer.domElement.addEventListener('webglcontextlost', handleContextLost)
+    renderer.domElement.addEventListener('webglcontextrestored', handleContextRestored)
 
     const focus = new THREE.Group()
     scene.add(focus)
@@ -173,8 +213,11 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
     const observer = new ResizeObserver(resize)
     observer.observe(container)
     let frame = 0
-    const animate = () => {
+    let lastRender = 0
+    const animate = (timestamp: number) => {
       frame = requestAnimationFrame(animate)
+      if (document.hidden || timestamp - lastRender < 1000 / 30) return
+      lastRender = timestamp
       controls.update()
       if (objectsRef.current?.pulse.visible) {
         const scale = 1 + 0.15 * Math.sin(performance.now() / 260)
@@ -183,13 +226,18 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
       }
       renderer.render(scene, camera)
     }
-    animate()
+    frame = requestAnimationFrame(animate)
     return () => {
       cancelAnimationFrame(frame)
+      window.clearTimeout(restartTimer)
+      window.clearTimeout(stableTimer)
+      renderer.domElement.removeEventListener('webglcontextlost', handleContextLost)
+      renderer.domElement.removeEventListener('webglcontextrestored', handleContextRestored)
       observer.disconnect(); controls.dispose(); renderer.dispose()
-      container.removeChild(renderer.domElement)
+      objectsRef.current = null
+      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement)
     }
-  }, [])
+  }, [rendererGeneration])
 
   useEffect(() => {
     const objects = objectsRef.current
@@ -209,7 +257,7 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
       objects.focus.rotation.y = THREE.MathUtils.degToRad(-90 - focusLongitude)
       objects.focus.rotation.x = THREE.MathUtils.degToRad(-focusLatitude * 0.18)
     }
-  }, [event, path, focusPoints])
+  }, [event, path, focusPoints, rendererGeneration])
 
   useEffect(() => {
     const objects = objectsRef.current
@@ -229,7 +277,7 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
     objects.visibilityCloud.geometry = geometry
-  }, [visibilityPoints])
+  }, [visibilityPoints, rendererGeneration])
 
   useEffect(() => {
     const objects = objectsRef.current
@@ -243,7 +291,7 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
       objects.pulse.position.copy(position.clone().multiplyScalar(1.002))
       objects.pulse.lookAt(new THREE.Vector3(0, 0, 0))
     }
-  }, [currentPoint])
+  }, [currentPoint, rendererGeneration])
 
   useEffect(() => {
     const objects = objectsRef.current
@@ -252,7 +300,23 @@ export function Globe({ event, path, currentPoint, visibilityPoints, focusPoints
     objects.observerMarker.position.copy(position)
     objects.observerHalo.position.copy(position.clone().multiplyScalar(1.001))
     objects.observerHalo.lookAt(new THREE.Vector3(0, 0, 0))
-  }, [observerLatitude, observerLongitude])
+  }, [observerLatitude, observerLongitude, rendererGeneration])
 
-  return <div className="globe has-tooltip" ref={containerRef} data-tooltip={tooltip} aria-label={tooltip} />
+  const retryRenderer = () => {
+    retryCountRef.current = 0
+    setRendererStatus('recovering')
+    setRendererGeneration((value) => value + 1)
+    logDiagnostic('webgl-manual-retry')
+  }
+
+  return (
+    <div className={`globe has-tooltip renderer-${rendererStatus}`} ref={containerRef} data-tooltip={tooltip} aria-label={tooltip}>
+      {rendererStatus !== 'ready' && (
+        <div className="globe-recovery" role="status">
+          <span>{recoveryLabel}</span>
+          {rendererStatus === 'failed' && <button type="button" onClick={retryRenderer}>{retryLabel}</button>}
+        </div>
+      )}
+    </div>
+  )
 }
